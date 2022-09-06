@@ -1,0 +1,213 @@
+<app-loading></app-loading>
+<page-header-wrapper>
+    <app-breadcrumb *ngIf="isBreadcrumb" [listBreadCrumb]="breadcrumbs"></app-breadcrumb>
+    <div nz-row>
+        <nz-card nz-row>
+            <nz-collapse [nzBordered]="false">
+                <nz-collapse-panel #searchPanel [nzExpandedIcon]="searchExpandedIcon" [nzActive]="true"
+                    [nzHeader]="'common.card.search.title' | i18n">
+                    <ng-template #searchExpandedIcon let-active>{{ active }}
+                        <i nz-icon nzType="caret-right" class="ant-collapse-arrow"
+                            [nzRotate]="searchPanel.nzActive ? 90 : -90"></i>
+                    </ng-template>
+                    <form nz-form [formGroup]="searchForm">
+                        <div nz-row>
+                            <div nz-col [nzSpan]="8" class="p-1">
+                                <app-input-text formControlName="code" #codeRef placeHolder="Nhập mã/ tiêu đề"
+                                    labelContent="{{ 'catalog-management.resource-setting.code' | i18n }} / {{ 'catalog-management.resource-setting.title.sr' | i18n}}">
+                                </app-input-text>
+                            </div>
+                            <div nz-col [nzSpan]="8" class="p-1">
+                                <app-select labelContent="{{ 'catalog-management.inventory.label.service' | i18n }}"
+                                    [data]="lstService" formControlName="serviceId" [placeHolder]="'--Tất cả--'"
+                                    [openSearchModal]="false" [getObjectValue]="true" [labelHorizontal]="false">
+                                </app-select>
+                            </div>
+                            <div nz-col [nzSpan]="8" class="p-1">
+                                <app-input-text placeHolder="Nhập tên đơn vị" formControlName="unitRequest"
+                                    labelContent="{{ 'catalog-management.resource-setting.request.org' | i18n}}">
+                                </app-input-text>
+                            </div>
+                        </div>
+                        <div nz-row>
+                            <div nz-col [nzSpan]="8" class="p-1">
+                                <app-input-text placeHolder="Nhập email" formControlName="emailRequest"
+                                    labelContent="{{ 'catalog-management.resource-setting.request.email' | i18n}}">
+                                </app-input-text>
+                            </div>
+                            <div nz-col [nzSpan]="8" class="p-1">
+                                <app-select [data]="lstStatus" [placeHolder]="'--Tất cả--'" [openSearchModal]="false"
+                                    [getObjectValue]="true" [labelHorizontal]="false" [valueField]="'value'"
+                                    formControlName="statusSetting"
+                                    labelContent="{{ 'catalog-management.resource-setting.setup.status' | i18n}}">
+                                </app-select>
+                            </div>
+                            <div nz-col [nzSpan]="8" class="p-1">
+                                <app-radio [data]="lstConnect" [labelHorizontal]="false" [valueField]="'value'"
+                                    labelContent="{{ 'catalog-management.resource-setting.connect.status' | i18n}}"
+                                    formControlName="connectServer">
+                                </app-radio>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-center btn-search__container">
+                            <app-button-base iconType="search" (clickAction)="nzOnSearch()"
+                                text="{{ 'layout.btn.search' | i18n }}"></app-button-base>
+                        </div>
+                    </form>
+                </nz-collapse-panel>
+            </nz-collapse>
+        </nz-card>
+    </div>
+    <div nz-row class="mb-0">
+        <nz-card>
+            <div class="list__container">
+                <div class="list__head">
+                    <div class="list__head-left">
+                        <div class="list__head-title">
+                            <span class="head-title">{{ 'catalog-management.service.label.resultTitle' | i18n : {total:
+                                ""} }}</span>
+                            <span class="head-count"><span class="head-count__bracket">(</span><span
+                                    class="head-count__number">{{ total }}</span><span
+                                    class="head-count__bracket">)</span></span>
+                        </div>
+                    </div>
+                    <div class="list__head-right">
+                        <div class="list__head-btn">
+                            <!-- ******** EDIT START -->
+                            <button class="ant-btn ant-btn-info" style="color: #AD0025; border: none"
+                                (click)="importExcel()"><i nz-icon nzType="upload" nzTheme="outline"></i><span>Import
+                                    yêu cầu cài đặt</span></button>
+                            <!-- ******** EDIT END ************** -->
+                            <button class="ant-btn ant-btn-info" style="color: #AD0025; border: none"
+                                (click)="syncSR()"><i nz-icon nzType="sync" nzTheme="outline"></i><span>Đồng bộ
+                                    SR</span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="list__table" *ngIf="total > 0">
+                <nz-table nzBordered [nzData]="lstData" [nzFrontPagination]="false" [nzScroll]="{ x: '2000px'}"
+                    [nzNoResult]="">
+                    <thead>
+                        <tr class="ant-header-customize">
+                            <th nzWidth="50px" class="text-center">
+                                {{ 'list.table.stt' | i18n }}
+                            </th>
+                            <th nzWidth="100px">
+                                {{ 'catalog-management.resource-setting.code' | i18n }}
+                            </th>
+                            <th nzWidth="200px">
+                                {{ 'catalog-management.resource-setting.title.sr' | i18n }}
+                            </th>
+                            <th nzWidth="150px">
+                                {{ 'catalog-management.inventory.label.service' | i18n }}
+                            </th>
+                            <th nzWidth="100px">
+                                {{ 'catalog-management.resource-setting.request.org' | i18n }}
+                            </th>
+                            <th nzWidth="150px">
+                                {{ 'catalog-management.resource-setting.request.email' | i18n }}
+                            </th>
+                            <th nzWidth="200px">
+                                {{ 'catalog-management.resource-setting.connect.status' | i18n }}
+                            </th>
+                            <th nzWidth="200px">
+                                {{ 'catalog-management.inventory.table.inventory' | i18n }}
+                            </th>
+                            <th nzWidth="200px">
+                                {{ 'catalog-management.inventory.table.playbook' | i18n }}
+                            </th>
+                            <th nzWidth="200px">
+                                {{ 'catalog-management.resource-setting.setup.status' | i18n }}
+                            </th>
+                            <th nzWidth="200px">
+                                {{ 'catalog-management.resource-setting.setting.result' | i18n }}
+                            </th>
+                            <!-- *************** EDIT START *************** -->
+                            <th nzWidth="200px">
+                                {{ 'catalog-management.resource-setting.setting.gnocFile' | i18n }}
+                            </th>
+                            <!-- ************* EDIT END ************* -->
+                            <th nzWidth="80px">
+                                {{ 'common.list.table.hanh-dong' | i18n }}
+                            </th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let data of lstData; let idex = index" [ngClass]="getBackGround(data)">
+                            <td class="text-center">{{(request.page * request.size) + idex + 1}}</td>
+                            <td [nz-tooltip]="data.code" class="max-width-100">{{data.code}}</td>
+                            <td [nz-tooltip]="data.name" class="max-width-150">{{data.name}}</td>
+                            <td [nz-tooltip]="data.serviceName" class="max-width-200">{{data.serviceName}}</td>
+                            <td [nz-tooltip]="data.unitRequest" class="max-width-100">{{data.unitRequest}}</td>
+                            <td [nz-tooltip]="data.emailRequest" class="max-width-150">{{data.emailRequest}}</td>
+                            <td [nz-tooltip]="getConnectName(data.connectServer)" class="max-width-150 text-center">
+                                <app-tag [color]="getColorTagConnect(data.connectServer)"
+                                    [tagClass]="data.connectServer == 1 ? 'text-tag' : ''">
+                                    {{getConnectName(data.connectServer)}}
+                                </app-tag>
+                            </td>
+                            <td class="width-200" [nz-tooltip]="data.inventoryFileName"><span
+                                    class="span-download text-ellipsis d-inline-block">{{data.inventoryFileName}}</span>
+                                <app-button-icon *ngIf="data.inventoryFileName" class="float-right"
+                                    (click)="downFile(data.inventoryFileId, data.inventoryFileName)"
+                                    [isDownloadFile]="true"></app-button-icon>
+                            </td>
+                            <td class="width-200" [nz-tooltip]="data.playbookFileName"><span
+                                    class="span-download text-ellipsis d-inline-block">{{data.playbookFileName}}</span>
+                                <app-button-icon class="float-right" *ngIf="data.playbookFileName"
+                                    (click)="downFile(data.playbookFileId, data.playbookFileName)"
+                                    [isDownloadFile]="true"></app-button-icon>
+                            </td>
+                            <td [nz-tooltip]="getResultName(data.statusSetting)" class="max-width-150 text-center">
+                                <app-tag [color]="data.statusSetting"
+                                    [tagClass]="data.statusSetting == 1 ? 'text-tag' : ''">
+                                    {{getResultName(data.statusSetting)}}
+                                </app-tag>
+                            </td>
+                            <td class="width-200" [nz-tooltip]="data.resultInstallFileName">
+                                <span
+                                    class="span-download text-ellipsis d-inline-block">{{data.resultInstallFileName}}</span>
+                                <app-button-icon class="float-right" *ngIf="data.resultInstallFileName"
+                                    [isDownloadFile]="true"
+                                    (click)="downFile(data.resultInstallFileId, data.resultInstallFileName)">
+                                </app-button-icon>
+                            </td>
+                            <!-- ********* EDIT START *********** -->
+                            <td class="width-200" [nz-tooltip]="data.excelFileName">
+                                <span class="span-download text-ellipsis d-inline-block">{{data.excelFileName}}</span>
+                                <app-button-icon class="float-right" *ngIf="data.excelFileId" [isDownloadFile]="true"
+                                    (click)="downFile(data.excelFileId, data.excelFileName)"></app-button-icon>
+                            </td>
+                            <!-- ********** EDIT END ************ -->
+                            <td class="max-width-200 pl-1 pr-1">
+                                <app-button-icon
+                                    *ngIf="(data.statusSetting === 1 && data.connectServer == 1) || data.inventoryFileId !=null"
+                                    [isSyn]="true" [tooltipTitle]="'layout.btn.syn'" (click)="reSync(data)">
+                                </app-button-icon>
+                                <app-button-icon class="float-right" [tooltipTitle]="'layout.btn.edit.installation'"
+                                    [isEdit]="true" (click)="showEdit(data.id)"></app-button-icon>
+                            </td>
+                        </tr>
+                    </tbody>
+                </nz-table>
+                <div nz-row class="list__pagination justify-content-start" *ngIf="total > 0">
+                    <div nz-col [nzSpan]="12">
+                        <app-paging [itemOfPage]="request.size" [currentPage]="request.page" [totalItems]="total"
+                            (changeCurrentPage)="changeCurrentPage($event)"
+                            (changeItemPerPage)="changeItemPerPage($event)"></app-paging>
+                    </div>
+                </div>
+            </div>
+            <app-no-result *ngIf="total === 0">
+            </app-no-result>
+        </nz-card>
+    </div>
+</page-header-wrapper>
+<!-- *********** EDIT START ****************** -->
+<app-modal-import title="{{'Import yêu cầu cài đặt'}}" [isVisible]="isViewConfirmCancel"
+    content="{{ 'common.cancel.confirm.content' | i18n}}" textButtonCancel="{{'layout.btn.reject' | i18n}}"
+    [isConfirm]="true" (callBack)="onCallBack()" (clickCancel)="onCancelImport()">
+</app-modal-import>
+<!-- ********** EDIT END ******************** -->

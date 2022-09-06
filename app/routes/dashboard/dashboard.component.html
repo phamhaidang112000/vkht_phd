@@ -1,0 +1,70 @@
+<app-loading></app-loading>
+<page-header-wrapper>
+  <app-breadcrumb *ngIf="isBreadcrumb" [listBreadCrumb]="breadcrumbs"></app-breadcrumb>
+  <div nz-row>
+    <nz-card nz-row>
+      <nz-collapse [nzBordered]="false">
+        <form [formGroup]="formSearch">
+          <div nz-row>
+            <div nz-col [nzSpan]="10" class="p-1">
+              <app-custom-date-range-picker labelContent="{{ 'dashboard.time' | i18n}}"
+                                            (changeDateRange)="selectChangeDate($event)"
+                                            [span] = "21"
+              ></app-custom-date-range-picker>
+            </div>
+            <div nz-col [nzSpan]="2" class="p-1"></div>
+            <div nz-col [nzSpan]="10" class="p-1">
+              <app-select [data]="lstUnit" labelContent="{{'dashboard.unit' | i18n}}"
+                          [span] = "21"
+                          [placeHolder]="'--Tất cả--'"
+                          [openSearchModal]="false"
+                          [getObjectValue]="true"
+                          labelHorizontal="false"
+                          [valueField]="'unitRequest'" [labelField]="'unitRequest'" formControlName="unit"
+                          (selectChange)="selectChangeService()"
+              ></app-select>
+            </div>
+          </div>
+        </form>
+      </nz-collapse>
+    </nz-card>
+  </div>
+  <div nz-row>
+    <nz-card>
+      <div id="chartWrapper">
+      <div id="divChart1">
+        <p id="textLabel"><b>Thống kê yêu cầu dịch vụ theo đơn vị</b></p>
+        <div *ngIf="maxSizeUnit === 0" id="divNoData">
+          <b>Không có dữ liệu!</b>
+        </div>
+        <canvas #chart id="chart_DV"></canvas>
+      </div>
+      </div>
+    </nz-card>
+  </div>
+  <div nz-row>
+    <div nz-col nzSpan="12" class="pr-2">
+      <nz-card>
+        <div id="divChart2">
+          <div *ngIf="isNullService === 0" id="divNoData">
+            <b>Không có dữ liệu!</b>
+          </div>
+          <p id="textLabel"><b>Thống kê yêu cầu dịch vụ</b></p>
+          <canvas id="chart_DVu"></canvas>
+        </div>
+      </nz-card>
+    </div>
+    <div nz-col nzSpan="12" class="pl-2">
+      <nz-card>
+        <div id="divChart3">
+          <div *ngIf="isNullRate === 0" id="divNoData">
+            <b>Không có dữ liệu!</b>
+          </div>
+          <p id="textLabel"><b>Thống kê yêu cầu dịch vụ theo trạng thái</b></p>
+          <canvas id="chart_TyLe"></canvas>
+        </div>
+      </nz-card>
+    </div>
+  </div>
+
+</page-header-wrapper>

@@ -1,0 +1,49 @@
+<app-loading></app-loading>
+<page-header-wrapper>
+    <app-breadcrumb *ngIf="isBreadcrumb" [listBreadCrumb]="breadcrumbs"></app-breadcrumb>
+    <nz-card class="nz-card__form" [nzBordered]="false">
+        <div nz-row>
+            <div nz-col nzSpan="24">
+                <app-title-header-layout>
+                    <span *ngIf="isEdit">{{'breadcrumb.os-management.edit' | i18n}} {{code}}</span>
+                    <span *ngIf="!isEdit">{{'breadcrumb.os-management.add' | i18n}}</span>
+                </app-title-header-layout>
+            </div>
+        </div>
+        <form nz-form [formGroup]="addForm">
+            <div class="alt-row__container">
+                <!-- <div class="alt-row__item">
+                    <app-input-text #codeRef required="true" formControlName="code" [isNoSpace]="true" [isSpecialDisable]="true" placeHolder="Mã SR" [maxLength]="500" labelContent="{{ 'catalog-management.sr.code' | i18n }}"></app-input-text>
+                </div> -->
+                <div class="alt-row__item">
+                    <app-input-text formControlName="name" placeHolder="" required="true" [maxLength]="500" labelContent="{{ 'catalog-management.os.name' | i18n }}"></app-input-text>
+                </div>
+                <div class="alt-row__item">
+                    <app-input-text formControlName="image" placeHolder="" required="true" [maxLength]="500" labelContent="{{ 'catalog-management.os.image' | i18n }}"></app-input-text>
+                </div>
+            </div>
+        </form>
+    </nz-card>
+    <div nz-row class="nz-card__form-action pt-4">
+        <div *ngIf="!id" nz-col nzSpan="6" class="p-3">
+            <label class="create-another" nz-checkbox [(ngModel)]="continueAdd">
+        {{'component.base.checkbox.create-another' | i18n}}
+      </label>
+        </div>
+        <div nz-col *ngIf="id" nz-col nzSpan="24" class="form-action__wrapper text-center">
+
+            <app-button-cancel [isIcon]="false" [popConfirm]="false" (clickCancel)="cancelConfirm()"></app-button-cancel>
+
+            <app-button-save [isIcon]="false" text="{{'layout.btn.update' | i18n}}" (clickSave)="submitForm(continueAdd)"></app-button-save>
+        </div>
+        <div nz-col *ngIf="!id" nz-col nzSpan="24" class="form-action__wrapper text-center">
+
+            <app-button-cancel [isIcon]="false" [popConfirm]="false" (clickCancel)="cancelConfirm()"></app-button-cancel>
+
+            <app-button-save [isIcon]="false" text="{{'layout.btn.create' | i18n}}" (clickSave)="submitForm(continueAdd)"></app-button-save>
+        </div>
+        <div *ngIf="!id" nz-col nzSpan="6"></div>
+    </div>
+</page-header-wrapper>
+<app-modal-confirm title="{{'layout.btn.confirm' | i18n}}" [isVisible]="isViewConfirmCancel" content="{{ 'common.cancel.confirm.content' | i18n}}" textButtonCancel="{{'layout.btn.reject' | i18n}}" [isConfirm]="true" (clickConfirm)="cancel()" (clickCancel)="onCancelConfirm()"></app-modal-confirm>
+
