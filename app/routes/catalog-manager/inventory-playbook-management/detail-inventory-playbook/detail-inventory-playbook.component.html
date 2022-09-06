@@ -1,363 +1,416 @@
 <app-loading></app-loading>
 <page-header-wrapper>
-    <app-breadcrumb *ngIf="isBreadcrumb" [listBreadCrumb]="breadcrumbs"></app-breadcrumb>
-    <nz-card class="nz-card__form" [nzBordered]="false">
-        <div nz-row>
-            <div nz-col nzSpan="24">
-                <app-title-header-layout>
-                    <span *ngIf="isEdit">{{'breadcrumb.inventory-playbook-management.edit' | i18n}} {{code}}</span>
-                    <span *ngIf="!isEdit">{{'breadcrumb.inventory-playbook-management.add' | i18n}}</span>
-                </app-title-header-layout>
-            </div>
-        </div>
-        <form nz-form [formGroup]="addForm">
-            <div class="alt-row__container">
-                <div class="alt-row__item">
-                    <app-input-text #codeRef required="true" formControlName="code" [isNoSpace]="true"
-                        [isSpecialDisable]="true" placeHolder="Nhập mã" [maxLength]="500"
-                        labelContent="{{ 'catalog-management.inventory.label.code' | i18n }}"></app-input-text>
-                </div>
-                <div class="alt-row__item">
-                    <app-input-text formControlName="name" placeHolder="Nhập tên" #nameRef required="true"
-                        [maxLength]="500" labelContent="{{ 'catalog-management.inventory.label.name' | i18n }}">
-                    </app-input-text>
-                </div>
-                <div class="alt-row__item">
-                    <app-select [data]="services" [placeHolder]="'--Lựa chọn--'" [openSearchModal]="false"
-                        [getObjectValue]="true" [labelHorizontal]="false" formControlName="service" required="true"
-                        (selectChange)="selectChangeService($event)"
-                        labelContent="{{'catalog-management.inventory.label.service' | i18n}}"></app-select>
-                </div>
-
-                <div class="alt-row__item">
-                    <app-select [data]="selectServiceModal" [placeHolder]="'--Lựa chọn--'" [openSearchModal]="false"
-                        [getObjectValue]="true" [labelHorizontal]="false" (selectChange)="onChangeModel($event)"
-                        formControlName="serviceModel" required="true"
-                        labelContent="{{'catalog-management.inventory.label.service-model' | i18n}}"></app-select>
-                </div>
-                <!-- EDIT START -->
-                <!-- *********************************************************************************************** -->
-                <div class="alt-row__item">
-                    <app-input-text required="true" formControlName="filePath" [isNoSpace]="true"
-                        [isSpecialDisable]="false" placeHolder="Nhập đường dẫn" [maxLength]="500"
-                        labelContent="{{ 'catalog-management.inventory.label.folder.setup' | i18n }}"
-                        (eventBlur)="blurFolderImport()">
-                    </app-input-text>
-                </div>
-
-                <div class="alt-row__item">
-                    <app-select [data]="listFileNameInventory" [labelField]="'fileName'" [valueField]="'fileName'"
-                        [placeHolder]="'--Lựa chọn--'" [openSearchModal]="false" [getObjectValue]="true"
-                        [labelHorizontal]="false" formControlName="inventoryFileName" required="true"
-                        labelContent="{{'catalog-management.inventory.label.file.inventory' | i18n}}"></app-select>
-                </div>
-
-                <div class="alt-row__item">
-                    <app-select [data]="listFileNamePlaybook" [labelField]="'fileName'" [valueField]="'fileName'"
-                        [placeHolder]="'--Lựa chọn--'" [openSearchModal]="false" [getObjectValue]="true"
-                        [labelHorizontal]="false" formControlName="playbookFileName" required="true"
-                        labelContent="{{'catalog-management.inventory.label.file.playbook' | i18n}}"></app-select>
-                </div>
-
-                <div class="alt-row__item">
-                    <app-select [data]="listFileNamePlaybookUninstall" [labelField]="'fileName'"
-                        [valueField]="'fileName'" [placeHolder]="'--Lựa chọn--'" [openSearchModal]="false"
-                        [getObjectValue]="true" [labelHorizontal]="false" formControlName="playbookUnsName"
-                        labelContent="{{'catalog-management.inventory.label.file.playbook.uninstall' | i18n}}">
-                    </app-select>
-                </div>
-                <!-- *********************************************************************************************** -->
-                <!-- EDIT END -->
-            </div>
-        </form>
-        <div nz-row class="pt-4">
-            <div nz-col nzSpan="24">
-                <app-title-header-layout>
-                    {{'layout.header.title.inventory.config' | i18n}}
-                </app-title-header-layout>
-            </div>
-            <div nz-col nzSpan="12" class="max-width-item">
-                <app-upload-file-attachment [listFiles]="listFileInventory" [isUploadFileModal]="true"
-                    [isMultiple]="false" [hideLabel]="false" labelContent="File đính kèm Inventory" [required]="true"
-                    [validMaxSize]="1" [checkbox]="false" (deleteFile)="eventDeleteFileFromModal($event,1)"
-                    (fetchFile)="fetchFile($event,1)" [control]="addForm.get('fileInventory')" [isEdit]="true">
-                </app-upload-file-attachment>
-                <span style="color: #f5222d;"
-                    *ngIf="listFileInventory.length == 0 && this.isSubmit">{{'common.error.require' | i18n :{key: 'File
-                    đính kèm Inventory'} }}</span>
-            </div>
-        </div>
-        <div nz-row>
-            <div nz-col nzSpan="24">
-                <div class="list__container">
-                    <div class="list__head">
-                        <div class="list__head-left">
-                            <div class="list__head-title">
-                                <span class="head-title">{{ 'catalog-management.inventory.detail.label.mapping' | i18n
-                                    }}<span style="color: red">*</span></span>
-                                <span class="head-count"><span class="head-count__bracket">(</span><span
-                                        class="head-count__number">{{ lstDataMapping.length || 0 }}</span><span
-                                        class="head-count__bracket">)</span></span>
-                            </div>
-                        </div>
-                        <div class="list__head-right">
-                            <div class="list__head-btn">
-                                <app-button-create [buttonType]="'link'" (clickCreate)="onCreateMapping('INVENTORY')">
-                                </app-button-create>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="list__table">
-                    <nz-table #rowSelectionTable nzBordered [nzData]="lstDataMapping" [nzFrontPagination]="false"
-                        [nzNoResult]="">
-                        <thead>
-                            <tr class="ant-header-customize">
-                                <th nzWidth="50px" class="text-center">
-                                    {{ 'list.table.stt' | i18n }}
-                                </th>
-                                <th nzWidth="300px" class="text-center">
-                                    {{ 'catalog-management.inventory.detail.table.variable-inventory' | i18n }}<span
-                                        class="table-required"></span>
-                                </th>
-                                <th nzWidth="350px" class="text-center">
-                                    {{ 'catalog-management.inventory.detail.table.location-gnoc' | i18n }}<span
-                                        class="table-required"></span>
-                                </th>
-                                <th nzWidth="70px" class="text-center">
-                                    {{ 'common.list.table.hanh-dong' | i18n }}
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <ng-template ngFor let-data let-idx="index" [ngForOf]="rowSelectionTable.data">
-                                <tr>
-                                    <td class="text-center max-width-50">{{(request.size * request.page) +idx + 1}}</td>
-                                    <td class="max-width-300">
-                                        <app-input-text
-                                            labelContent="{{ 'catalog-management.inventory.detail.table.variable-inventory' | i18n }}"
-                                            [hideLabel]="true" [maxLength]="500" required
-                                            [class]="data.isRequireVariable ? 'has-error' : ''"
-                                            (onChange)="data.isRequireVariable = false" [isNgModel]="true"
-                                            [isSpecialDisable]="true" [isNoSpace]="true"
-                                            [(ngModel)]="data.variableInventory" #variable="ngModel"
-                                            (change)="onblurChange($event, variable, 1)"></app-input-text>
-                                        <div class="error">
-                                            <span *ngIf="variable.valid || variable.pristine">&nbsp;</span>
-                                            <span *ngIf="isSubmit && data.isRequireVariable && variable.pristine">
-                                                {{ 'common.error.require' | i18n : { key :
-                                                this.translateService.instant('catalog-management.inventory.detail.table.variable-inventory')}
-                                                }}
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td class="max-width-300"
-                                        style="overflow: unset !important;white-space: pre-line !important;">
-                                        <app-input-text
-                                            labelContent="{{ 'catalog-management.inventory.detail.table.location-gnoc' | i18n }}"
-                                            [hideLabel]="true" class="error" [maxLength]="5" required
-                                            [class]="data.isRequireGnoc ? 'has-error' : ''"
-                                            (onChange)="data.isRequireGnoc = false" [isNgModel]="true"
-                                            [isSpecialDisable]="true" [isNoSpace]="true"
-                                            (change)="onblurChange($event, place,2)" [(ngModel)]="data.placeGNOC"
-                                            #place="ngModel"></app-input-text>
-                                        <div class="error">
-                                            <span *ngIf="place.valid || place.pristine">&nbsp;</span>
-                                            <span *ngIf="isSubmit && data.isRequireGnoc && place.pristine">
-                                                {{ 'common.error.require' | i18n : { key :
-                                                this.translateService.instant('catalog-management.inventory.detail.table.location-gnoc')}
-                                                }}
-                                            </span>
-                                            <span></span>
-                                        </div>
-                                    </td>
-                                    <td class="max-width-120 text-center">
-                                        <app-button-icon [isDelete]="true" [tooltipTitle]="'Xóa dòng'"
-                                            (click)="onDeleteMapping(idx,'INVENTORY')"></app-button-icon>
-                                    </td>
-                                </tr>
-                            </ng-template>
-                    </nz-table>
-                    <!--          <div nz-row class="list__pagination justify-content-start" *ngIf="total > 0">-->
-                    <!--            <div nz-col [nzSpan]="12">-->
-                    <!--              <app-paging-->
-                    <!--                [itemOfPage]="request.size"-->
-                    <!--                [currentPage]="request.page"-->
-                    <!--                [totalItems]="total"-->
-                    <!--                (changeCurrentPage)="changeCurrentPage($event)"-->
-                    <!--                (changeItemPerPage)="changeItemPerPage($event)"-->
-                    <!--              ></app-paging>-->
-                    <!--            </div>-->
-                    <!--          </div>-->
-                    <div class="error" *ngIf="isSubmit && isMappingNull">
-                        <span>{{'catalog-management.inventory.detail.label.mapping.empty' | i18n}}</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- <div nz-row>
-            <div nz-col nzSpan="24">
-                <app-title-header-layout>
-                    {{'layout.header.title.playbook.config' | i18n}}
-                </app-title-header-layout>
-            </div>
-            <div nz-col nzSpan="12" class="pr-2">
-                <app-upload-file-attachment [listFiles]="listFilePlayBook" [isUploadFileModal]="true" [isMultiple]="false" [hideLabel]="false" labelContent="File đính kèm PlayBook" [required]="true" [validMaxSize]="1" (deleteFile)="eventDeleteFileFromModal($event,2)"
-                    (fetchFile)="fetchFile($event,2)" [control]="addForm.get('fileInventory')" [isEdit]="true"></app-upload-file-attachment>
-                <span style="color: #f5222d;" *ngIf="listFilePlayBook.length == 0 && this.isSubmit">{{'common.error.require' | i18n :{key: 'File đính kèm PlayBook'} }}</span>
-            </div>
-            <div nz-col nzSpan="12" class="pl-2">
-                <app-upload-file-attachment [listFiles]="listFilePlayBookUnis" [isUploadFileModal]="true" [isMultiple]="false" [hideLabel]="false" labelContent="File đính kèm Playbook Uninstall" [required]="true" [validMaxSize]="1" (deleteFile)="eventDeleteFileFromModal($event,3)"
-                    (fetchFile)="fetchFile($event,3)" [control]="addForm.get('fileInventory')" [isEdit]="true"></app-upload-file-attachment>
-                <span style="color: #f5222d;" *ngIf="listFilePlayBookUnis.length == 0 && this.isSubmit">{{'common.error.require' | i18n :{key: 'File đính kèm Playbook Uninstall'} }}</span>
-            </div>
-        </div> -->
-
-        <!-- EDIT START -->
-        <!-- *********************************************************************************************** -->
-        <div nz-row class="pt-4">
-            <div nz-col nzSpan="24">
-                <div nz-col nzSpan="24">
-                    <app-title-header-layout>
-                        {{'catalog-management.inventory.setup.function' | i18n}}
-                    </app-title-header-layout>
-                </div>
-            </div>
-        </div>
-
-        <div nz-row>
-            <div nz-col nzSpan="24">
-                <div class="list__container">
-                    <div class="list__head">
-                        <div class="list__head-left">
-                            <div class="list__head-title">
-                                <span class="head-title">{{ 'catalog-management.inventory.detail.label.setting.mapping'
-                                    | i18n
-                                    }}<span style="color: red">*</span></span>
-                                <span class="head-count"><span class="head-count__bracket">(</span><span
-                                        class="head-count__number">{{ lstDataSetupMapping.length || 0 }}</span><span
-                                        class="head-count__bracket">)</span></span>
-                            </div>
-                        </div>
-                        <div class="list__head-right">
-                            <div class="list__head-btn">
-                                <app-button-create [buttonType]="'link'"
-                                    (clickCreate)="onCreateMapping('INVENTORY_SETUP')">
-                                </app-button-create>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="list__table">
-                    <nz-table #rowSelectionSetupTable nzBordered [nzData]="lstDataSetupMapping"
-                        [nzFrontPagination]="false" [nzNoResult]="">
-                        <thead>
-                            <tr class="ant-header-customize">
-                                <th nzWidth="50px" class="text-center">
-                                    {{ 'list.table.stt' | i18n }}
-                                </th>
-                                <th nzWidth="300px" class="text-center">
-                                    {{ 'catalog-management.inventory.detail.table.variable' | i18n }}<span
-                                        class="table-required"></span>
-                                </th>
-                                <th nzWidth="350px" class="text-center">
-                                    {{ 'catalog-management.inventory.detail.table.location-gnoc' | i18n }}<span
-                                        class="table-required"></span>
-                                </th>
-                                <th nzWidth="70px" class="text-center">
-                                    {{ 'common.list.table.hanh-dong' | i18n }}
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <ng-template ngFor let-data let-idx="index" [ngForOf]="rowSelectionSetupTable.data">
-                                <tr>
-                                    <td class="text-center max-width-50">{{(request.size * request.page) +idx + 1}}</td>
-                                    <td class="max-width-300">
-                                        <app-input-text
-                                            labelContent="{{ 'catalog-management.inventory.detail.table.variable-setting' | i18n }}"
-                                            [hideLabel]="true" [maxLength]="500" required
-                                            [class]="data.isRequireVariable ? 'has-error' : ''"
-                                            (onChange)="data.isRequireVariable = false" [isNgModel]="true"
-                                            [isSpecialDisable]="true" [isNoSpace]="true"
-                                            [(ngModel)]="data.variableSetting" #variable="ngModel"
-                                            (change)="onblurChange($event, variable, 1,'Setting')">
-                                        </app-input-text>
-                                        <div class="error">
-                                            <span *ngIf="variable.valid || variable.pristine">&nbsp;</span>
-                                            <span *ngIf="isSubmit && data.isRequireVariable && variable.pristine">
-                                                {{ 'common.error.require' | i18n : { key :
-                                                this.translateService.instant('catalog-management.inventory.detail.table.variable-setting')}
-                                                }}
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td class="max-width-300"
-                                        style="overflow: unset !important;white-space: pre-line !important;">
-                                        <app-input-text
-                                            labelContent="{{ 'catalog-management.inventory.detail.table.location-gnoc' | i18n }}"
-                                            [hideLabel]="true" class="error" required
-                                            [class]="data.isRequireGnoc ? 'has-error' : ''"
-                                            (onChange)="data.isRequireGnoc = false" [isNgModel]="true"
-                                            [isSpecialDisable]="true" [isNoSpace]="true"
-                                            (change)="onblurChange($event, place,2,'Setting')"
-                                            [(ngModel)]="data.placeGNOC" #place="ngModel"></app-input-text>
-                                        <div class="error">
-                                            <span *ngIf="place.valid || place.pristine">&nbsp;</span>
-                                            <span *ngIf="isSubmit && data.isRequireGnocMapping && place.pristine">
-                                                {{ 'common.error.require' | i18n : { key :
-                                                this.translateService.instant('catalog-management.inventory.detail.table.location-gnoc')}
-                                                }}
-                                            </span>
-                                            <span></span>
-                                        </div>
-                                    </td>
-                                    <td class="max-width-120 text-center">
-                                        <app-button-icon [isDelete]="true" [tooltipTitle]="'Xóa dòng'"
-                                            (click)="onDeleteMapping(idx, 'INVENTORY_SETUP')"></app-button-icon>
-                                    </td>
-                                </tr>
-                            </ng-template>
-                    </nz-table>
-                    <!--          <div nz-row class="list__pagination justify-content-start" *ngIf="total > 0">-->
-                    <!--            <div nz-col [nzSpan]="12">-->
-                    <!--              <app-paging-->
-                    <!--                [itemOfPage]="request.size"-->
-                    <!--                [currentPage]="request.page"-->
-                    <!--                [totalItems]="total"-->
-                    <!--                (changeCurrentPage)="changeCurrentPage($event)"-->
-                    <!--                (changeItemPerPage)="changeItemPerPage($event)"-->
-                    <!--              ></app-paging>-->
-                    <!--            </div>-->
-                    <!--          </div>-->
-                    <div class="error" *ngIf="isSubmit && isMappingSetupNull">
-                        <span>{{'catalog-management.inventory.detail.label.setting.mapping.empty' | i18n}}</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- *********************************************************************************************** -->
-        <!-- EDIT END -->
-
-    </nz-card>
-    <div nz-row class="nz-card__form-action pt-4">
-        <div *ngIf="!id" nz-col nzSpan="6" class="p-3">
-            <label class="create-another" nz-checkbox [(ngModel)]="continueAdd">
-                {{'component.base.checkbox.create-another' | i18n}}
-            </label>
-        </div>
-        <div nz-col [nzSpan]="!id ? 12 : 24" class="form-action__wrapper text-center">
-
-            <app-button-cancel [isIcon]="false" [popConfirm]="false" (clickCancel)="cancelConfirm()">
-            </app-button-cancel>
-
-            <app-button-save [isIcon]="false"
-                text="{{id ? ('layout.btn.update' | i18n) : ('layout.btn.create' | i18n)}}"
-                (clickSave)="submitForm(continueAdd)"></app-button-save>
-        </div>
-        <div *ngIf="!id" nz-col nzSpan="6"></div>
+  <app-breadcrumb *ngIf="isBreadcrumb" [listBreadCrumb]="breadcrumbs"></app-breadcrumb>
+  <nz-card class="nz-card__form" [nzBordered]="false">
+    <div nz-row>
+      <div nz-col nzSpan="24">
+        <app-title-header-layout>
+          <span *ngIf="isEdit">{{'breadcrumb.inventory-playbook-management.edit' | i18n}} {{code}}</span>
+          <span *ngIf="!isEdit">{{'breadcrumb.inventory-playbook-management.add' | i18n}}</span>
+        </app-title-header-layout>
+      </div>
     </div>
+    <form nz-form [formGroup]="addForm">
+      <div class="alt-row__container">
+        <div class="alt-row__item">
+          <app-input-text
+            #codeRef
+            required="true"
+            formControlName="code"
+            [isNoSpace]="true"
+            [isSpecialDisable]="true"
+            placeHolder="Nhập mã"
+            [maxLength]="500"
+            labelContent="{{ 'catalog-management.inventory.label.code' | i18n }}"
+          ></app-input-text>
+        </div>
+        <div class="alt-row__item">
+          <app-input-text
+            formControlName="name"
+            placeHolder="Nhập tên"
+            #nameRef
+            required="true"
+            [maxLength]="500"
+            labelContent="{{ 'catalog-management.inventory.label.name' | i18n }}"
+          ></app-input-text>
+        </div>
+        <div class="alt-row__item">
+          <app-select
+            [data]="services"
+            [placeHolder]="'--Lựa chọn--'"
+            [openSearchModal]="false"
+            [getObjectValue]="true"
+            [labelHorizontal]="false"
+            formControlName="service"
+            required="true"
+            (selectChange)="selectChangeService($event)"
+            labelContent="{{'catalog-management.inventory.label.service' | i18n}}"
+          ></app-select>
+        </div>
+
+        <div class="alt-row__item">
+          <app-select
+            [data]="selectServiceModal"
+            [placeHolder]="'--Lựa chọn--'"
+            [openSearchModal]="false"
+            [getObjectValue]="true"
+            [labelHorizontal]="false"
+            (selectChange)="onChangeModel($event)"
+            formControlName="serviceModel"
+            required="true"
+            labelContent="{{'catalog-management.inventory.label.service-model' | i18n}}"
+          ></app-select>
+        </div>
+
+        <div class="alt-row__item">
+          <app-input-text
+              required="true"
+              formControlName="filePath"
+              [isNoSpace]="true"
+              [isSpecialDisable]="false"
+              placeHolder="Nhập đường dẫn"
+              [maxLength]="500"
+              [maxLengthError]="true"
+              labelContent="{{ 'catalog-management.inventory.label.folder.setup' | i18n }}"
+              (eventBlur)="blurFolderImport()"
+          ></app-input-text>
+        </div>
+
+        <div class="alt-row__item">
+          <app-select
+            [data]="listFileNameInventory"
+            [labelField] = "'fileName'"
+            [valueField] = "'fileName'"
+            [placeHolder]="'--Lựa chọn--'"
+            [openSearchModal]="false"
+            [getObjectValue]="true"
+            [labelHorizontal]="false"
+            formControlName="inventoryFileName"
+            required="true"
+            labelContent="{{'catalog-management.inventory.label.file.inventory' | i18n}}"
+          ></app-select>
+        </div>
+
+        <div class="alt-row__item">
+          <app-select
+            [data]="listFileNamePlaybook"
+            [labelField] = "'fileName'"
+            [valueField] = "'fileName'"
+            [placeHolder]="'--Lựa chọn--'"
+            [openSearchModal]="false"
+            [getObjectValue]="true"
+            [labelHorizontal]="false"
+            formControlName="playbookFileName"
+            required="true"
+            labelContent="{{'catalog-management.inventory.label.file.playbook' | i18n}}"
+          ></app-select>
+        </div>
+
+        <div class="alt-row__item">
+          <app-select
+            [data]="listFileNamePlaybookUninstall"
+            [labelField] = "'fileName'"
+            [valueField] = "'fileName'"
+            [placeHolder]="'--Lựa chọn--'"
+            [openSearchModal]="false"
+            [getObjectValue]="true"
+            [labelHorizontal]="false"
+            formControlName="playbookUnsName"
+            labelContent="{{'catalog-management.inventory.label.file.playbook.uninstall' | i18n}}"
+          ></app-select>
+        </div>
+      </div>
+    </form>
+
+    <div nz-row class="pt-4">
+      <div nz-col nzSpan="24">
+        <div nz-col nzSpan="24">
+          <app-title-header-layout>
+            {{'catalog-management.inventory.function' | i18n}}
+          </app-title-header-layout>
+        </div>
+      </div>
+    </div>
+
+    <div nz-row>
+      <div nz-col nzSpan="24">
+        <div class="list__container">
+          <div class="list__head">
+            <div class="list__head-left">
+              <div class="list__head-title">
+                  <span
+                    class="head-title">{{ 'catalog-management.inventory.detail.label.mapping' | i18n }}<span style="color: red">*</span></span>
+                <span class="head-count"><span class="head-count__bracket">(</span><span class="head-count__number">{{ lstDataMapping.length || 0 }}</span
+                ><span class="head-count__bracket">)</span></span>
+              </div>
+            </div>
+            <div class="list__head-right">
+              <div class="list__head-btn">
+                <app-button-create
+                  [buttonType]="'link'"
+                  (clickCreate)="onCreateMapping('INVENTORY')"
+                ></app-button-create>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="list__table">
+          <nz-table
+            #rowSelectionTable
+            nzBordered
+            [nzData]="lstDataMapping"
+            [nzFrontPagination]="false"
+            [nzNoResult]=""
+          >
+            <thead>
+            <tr class="ant-header-customize">
+              <th nzWidth="50px" class="text-center">
+                {{ 'list.table.stt' | i18n }}
+              </th>
+              <th nzWidth="300px" class="text-center">
+                {{ 'catalog-management.inventory.detail.table.variable-inventory' | i18n }}<span
+                class="table-required"></span>
+              </th>
+              <th nzWidth="350px" class="text-center">
+                {{ 'catalog-management.inventory.detail.table.location-gnoc' | i18n }}<span
+                class="table-required"></span>
+              </th>
+              <th nzWidth="70px" class="text-center">
+                {{ 'common.list.table.hanh-dong' | i18n }}
+              </th>
+            </tr>
+            </thead>
+            <tbody>
+            <ng-template ngFor let-data let-idx="index" [ngForOf]="rowSelectionTable.data">
+              <tr>
+                <td class="text-center max-width-50">{{(request.size * request.page) +idx + 1}}</td>
+                <td class="max-width-300">
+                  <app-input-text labelContent="{{ 'catalog-management.inventory.detail.table.variable-inventory' | i18n }}"
+                                  [hideLabel]="true"
+                                  [maxLength]="500" required
+                                  [class]="data.isRequireVariable ? 'has-error' : ''"
+                                  (onChange)="data.isRequireVariable = false"
+                                  [isNgModel]="true"
+                                  [isSpecialDisable]="true"
+                                  [isNoSpace]="true"
+                                  [(ngModel)]="data.variableInventory" #variable="ngModel"
+                                  (change)="onblurChange($event, variable, 1,'Inventory')"
+                  ></app-input-text>
+                  <div class="error"  >
+                    <span *ngIf="variable.valid || variable.pristine">&nbsp;</span>
+                    <span *ngIf="isSubmit && data.isRequireVariable && variable.pristine">
+                      {{ 'common.error.require' | i18n : { key :  this.translateService.instant('catalog-management.inventory.detail.table.variable-inventory')} }}
+                    </span>
+                  </div>
+                </td>
+                <td class="max-width-300" style="overflow: unset !important;white-space: pre-line !important;">
+                  <app-input-text labelContent="{{ 'catalog-management.inventory.detail.table.location-gnoc' | i18n }}"
+                                  [hideLabel]="true"
+                                  class="error"
+                                  [maxLength]="5" required
+                                  [class]="data.isRequireGnoc ? 'has-error' : ''"
+                                  (onChange)="data.isRequireGnoc = false"
+                                  [isNgModel]="true"
+                                  [isSpecialDisable]="true"
+                                  [isNoSpace]="true"
+                                  (change)="onblurChange($event, place,2,'Inventory')"
+                                  [(ngModel)]="data.placeGNOC" #place="ngModel"></app-input-text>
+                  <div class="error"  >
+                    <span *ngIf="place.valid || place.pristine">&nbsp;</span>
+                    <span *ngIf="isSubmit && data.isRequireGnoc && place.pristine">
+                      {{ 'common.error.require' | i18n : { key :  this.translateService.instant('catalog-management.inventory.detail.table.location-gnoc')} }}
+                    </span>
+                    <span ></span>
+                  </div>
+                </td>
+                <td class="max-width-120 text-center">
+                  <app-button-icon
+                    [isDelete]="true"
+                    [tooltipTitle]="'Xóa dòng'"
+                    (click)="onDeleteMapping(idx, 'INVENTORY')"
+                  ></app-button-icon>
+                </td>
+              </tr>
+            </ng-template>
+          </nz-table>
+<!--          <div nz-row class="list__pagination justify-content-start" *ngIf="total > 0">-->
+<!--            <div nz-col [nzSpan]="12">-->
+<!--              <app-paging-->
+<!--                [itemOfPage]="request.size"-->
+<!--                [currentPage]="request.page"-->
+<!--                [totalItems]="total"-->
+<!--                (changeCurrentPage)="changeCurrentPage($event)"-->
+<!--                (changeItemPerPage)="changeItemPerPage($event)"-->
+<!--              ></app-paging>-->
+<!--            </div>-->
+<!--          </div>-->
+          <div class="error"  *ngIf="isSubmit && isMappingNull">
+            <span>{{'catalog-management.inventory.detail.label.mapping.empty' | i18n}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div nz-row class="pt-4">
+      <div nz-col nzSpan="24">
+        <div nz-col nzSpan="24">
+          <app-title-header-layout>
+            {{'catalog-management.inventory.setup.function' | i18n}}
+          </app-title-header-layout>
+        </div>
+      </div>
+    </div>
+
+    <div nz-row>
+      <div nz-col nzSpan="24">
+        <div class="list__container">
+          <div class="list__head">
+            <div class="list__head-left">
+              <div class="list__head-title">
+                  <span
+                    class="head-title">{{ 'catalog-management.inventory.detail.label.setting.mapping' | i18n }}<span style="color: red">*</span></span>
+                <span class="head-count"><span class="head-count__bracket">(</span><span class="head-count__number">{{ lstDataSetupMapping.length || 0 }}</span
+                ><span class="head-count__bracket">)</span></span>
+              </div>
+            </div>
+            <div class="list__head-right">
+              <div class="list__head-btn">
+                <app-button-create
+                  [buttonType]="'link'"
+                  (clickCreate)="onCreateMapping('INVENTORY_SETUP')"
+                ></app-button-create>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="list__table">
+          <nz-table
+              #rowSelectionSetupTable
+              nzBordered
+              [nzData]="lstDataSetupMapping"
+              [nzFrontPagination]="false"
+              [nzNoResult]=""
+          >
+            <thead>
+            <tr class="ant-header-customize">
+              <th nzWidth="50px" class="text-center">
+                {{ 'list.table.stt' | i18n }}
+              </th>
+              <th nzWidth="300px" class="text-center">
+                {{ 'catalog-management.inventory.detail.table.variable' | i18n }}<span
+                class="table-required"></span>
+              </th>
+              <th nzWidth="350px" class="text-center">
+                {{ 'catalog-management.inventory.detail.table.location-gnoc' | i18n }}<span
+                class="table-required"></span>
+              </th>
+              <th nzWidth="70px" class="text-center">
+                {{ 'common.list.table.hanh-dong' | i18n }}
+              </th>
+            </tr>
+            </thead>
+            <tbody>
+            <ng-template ngFor let-data let-idx="index" [ngForOf]="rowSelectionSetupTable.data">
+              <tr>
+                <td class="text-center max-width-50">{{(request.size * request.page) +idx + 1}}</td>
+                <td class="max-width-300">
+                  <app-input-text labelContent="{{ 'catalog-management.inventory.detail.table.variable-setting' | i18n }}"
+                                  [hideLabel]="true"
+                                  [maxLength]="500" required
+                                  [class]="data.isRequireVariable ? 'has-error' : ''"
+                                  (onChange)="data.isRequireVariable = false"
+                                  [isNgModel]="true"
+                                  [isSpecialDisable]="true"
+                                  [isNoSpace]="true"
+                                  [(ngModel)]="data.variableSetting" #variable="ngModel"
+                                  (change)="onblurChange($event, variable, 1,'Setting')"
+                  ></app-input-text>
+                  <div class="error"  >
+                    <span *ngIf="variable.valid || variable.pristine">&nbsp;</span>
+                    <span *ngIf="isSubmit && data.isRequireVariable && variable.pristine">
+                      {{ 'common.error.require' | i18n : { key :  this.translateService.instant('catalog-management.inventory.detail.table.variable-setting')} }}
+                    </span>
+                  </div>
+                </td>
+                <td class="max-width-300" style="overflow: unset !important;white-space: pre-line !important;">
+                  <app-input-text labelContent="{{ 'catalog-management.inventory.detail.table.location-gnoc' | i18n }}"
+                                  [hideLabel]="true"
+                                  class="error"
+                                  required
+                                  [class]="data.isRequireGnoc ? 'has-error' : ''"
+                                  (onChange)="data.isRequireGnoc = false"
+                                  [isNgModel]="true"
+                                  [isSpecialDisable]="true"
+                                  [isNoSpace]="true"
+                                  (change)="onblurChange($event, place,2,'Setting')"
+                                  [(ngModel)]="data.placeGNOC" #place="ngModel"></app-input-text>
+                  <div class="error"  >
+                    <span *ngIf="place.valid || place.pristine">&nbsp;</span>
+                    <span *ngIf="isSubmit && data.isRequireGnocMapping && place.pristine">
+                      {{ 'common.error.require' | i18n : { key :  this.translateService.instant('catalog-management.inventory.detail.table.location-gnoc')} }}
+                    </span>
+                    <span ></span>
+                  </div>
+                </td>
+                <td class="max-width-120 text-center">
+                  <app-button-icon
+                    [isDelete]="true"
+                    [tooltipTitle]="'Xóa dòng'"
+                    (click)="onDeleteMapping(idx, 'INVENTORY_SETUP')"
+                  ></app-button-icon>
+                </td>
+              </tr>
+            </ng-template>
+          </nz-table>
+          <!--          <div nz-row class="list__pagination justify-content-start" *ngIf="total > 0">-->
+          <!--            <div nz-col [nzSpan]="12">-->
+          <!--              <app-paging-->
+          <!--                [itemOfPage]="request.size"-->
+          <!--                [currentPage]="request.page"-->
+          <!--                [totalItems]="total"-->
+          <!--                (changeCurrentPage)="changeCurrentPage($event)"-->
+          <!--                (changeItemPerPage)="changeItemPerPage($event)"-->
+          <!--              ></app-paging>-->
+          <!--            </div>-->
+          <!--          </div>-->
+          <div class="error"  *ngIf="isSubmit && isMappingSetupNull">
+            <span>{{'catalog-management.inventory.detail.label.setting.mapping.empty' | i18n}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </nz-card>
+  <div nz-row class="nz-card__form-action pt-4">
+    <div *ngIf="!id" nz-col nzSpan="6" class="p-3">
+      <label class="create-another" nz-checkbox [(ngModel)]="continueAdd">
+        {{'component.base.checkbox.create-another' | i18n}}
+      </label>
+    </div>
+    <div nz-col [nzSpan]="!id ? 12 : 24" class="form-action__wrapper text-center">
+
+      <app-button-cancel
+        [isIcon]="false"
+        [popConfirm]="false"
+        (clickCancel)="cancelConfirm()"
+      ></app-button-cancel>
+
+      <app-button-save
+        [isIcon]="false"
+        text="{{id ? ('layout.btn.update' | i18n) : ('layout.btn.create' | i18n)}}"
+        (clickSave)="submitForm(continueAdd)"
+      ></app-button-save>
+    </div>
+    <div *ngIf="!id" nz-col nzSpan="6"></div>
+  </div>
 </page-header-wrapper>
-<app-modal-confirm title="{{'layout.btn.confirm' | i18n}}" [isVisible]="isViewConfirmCancel"
-    content="{{ 'common.cancel.confirm.content' | i18n}}" textButtonCancel="{{'layout.btn.reject' | i18n}}"
-    [isConfirm]="true" (clickConfirm)="cancel()" (clickCancel)="onCancelConfirm()"></app-modal-confirm>
+<app-modal-confirm
+  title="{{'layout.btn.confirm' | i18n}}"
+  [isVisible] = "isViewConfirmCancel"
+  content = "{{ 'common.cancel.confirm.content' | i18n}}"
+  textButtonCancel="{{'layout.btn.reject' | i18n}}"
+  [isConfirm]="true"
+  (clickConfirm)="cancel()"
+  (clickCancel)="onCancelConfirm()"
+></app-modal-confirm>

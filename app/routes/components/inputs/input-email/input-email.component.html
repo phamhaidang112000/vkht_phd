@@ -56,7 +56,7 @@
           <ng-container *ngIf="control.hasError('required')">
             {{errorTipRequired}}
           </ng-container>
-          <ng-container *ngIf="control.hasError('maxlength')">{{labelContent}} chỉ nhập tối đa {{maxLength}} ký tự
+          <ng-container *ngIf="control.hasError('maxlength')">{{labelContent}} không được vượt quá {{maxLength}} ký tự
           </ng-container>
         </ng-template>
       </nz-input-group>

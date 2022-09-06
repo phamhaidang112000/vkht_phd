@@ -18,7 +18,6 @@ export class AuthenticationService {
 
   public login(SSOToken: string): Observable<any> {
     const url = `${environment.BASE_API_URI.BASE_SERVICE_API}vhkt-service/token`;
-    // return this.httpClient.get(url + "?tokenSSO=" + SSOToken + '&_allow_anonymous=true', {responseType: 'text'});
     return this.httpClient.get(url + "?tokenSSO=" + encodeURIComponent(SSOToken) + '&_allow_anonymous=true', {responseType: 'text'});
   }
 

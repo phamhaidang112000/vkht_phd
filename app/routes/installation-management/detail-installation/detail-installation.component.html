@@ -1,225 +1,260 @@
 <app-loading></app-loading>
 <page-header-wrapper>
-    <app-breadcrumb *ngIf="isBreadcrumb" [listBreadCrumb]="breadcrumbs"></app-breadcrumb>
-    <nz-card class="nz-card__form" [nzBordered]="false">
-        <div nz-row>
-            <div nz-col nzSpan="24">
-                <app-title-header-layout>
-                    <span>{{'breadcrumb.resource-setting.update' | i18n}} {{getFieldValue('code')}}</span>
-                </app-title-header-layout>
-            </div>
-        </div>
-        <div nz-row>
-            <form nz-form [formGroup]="formSave" (ngSubmit)="submitForm()">
-                <div nz-row>
-                    <div nz-col [nzSpan]="6" class="p-1">
-                        <app-input-text required="true" formControlName="code" [disabled]="true"
-                            labelContent="{{ 'catalog-management.resource-setting.code' | i18n}}">
-                        </app-input-text>
-                    </div>
-                    <div nz-col [nzSpan]="6" class="p-1">
-                        <app-input-text required="true" formControlName="name" [disabled]="true"
-                            labelContent="{{ 'catalog-management.resource-setting.title.sr' | i18n}}"></app-input-text>
-                    </div>
-                    <div nz-col [nzSpan]="6" class="p-1">
-                        <app-input-text formControlName="serviceName" required="true" [disabled]="true"
-                            labelContent="{{ 'catalog-management.inventory.table.service' | i18n}}"></app-input-text>
-                    </div>
-                    <div nz-col [nzSpan]="6" class="p-1">
-                        <app-input-text formControlName="serviceModelName" required="true" [disabled]="true"
-                            labelContent="{{ 'catalog-management.inventory.table.service-model' | i18n}}">
-                        </app-input-text>
-                    </div>
-                </div>
-                <div nz-row>
-                    <div nz-col nzSpan="6" class="p-1">
-                        <app-input-text formControlName="unitRequest" [disabled]="true" required="true"
-                            labelContent="{{'catalog-management.resource-setting.request.org' | i18n}}">
-                        </app-input-text>
-                    </div>
-                    <div nz-col nzSpan="6" class="p-1">
-                        <app-input-text formControlName="emailRequest" [disabled]="true" required="true"
-                            labelContent="{{'catalog-management.resource-setting.request.email' | i18n}}">
-                        </app-input-text>
-                    </div>
-                    <div nz-col nzSpan="6" class="p-1">
-                        <app-select [data]="lstConnect" [openSearchModal]="false" [getObjectValue]="true"
-                            [labelHorizontal]="false" [disabled]="true" formControlName="connectServer"
-                            [valueField]="'value'" required="true"
-                            labelContent="{{'catalog-management.resource-setting.connect.status' | i18n}}"></app-select>
-                    </div>
-                    <div nz-col nzSpan="6" class="p-1">
-                        <app-select [data]="lstStatus" formControlName="statusSetting" [openSearchModal]="false"
-                            [getObjectValue]="true" [labelHorizontal]="false" [valueField]="'value'" [disabled]="true"
-                            required="true"
-                            labelContent="{{'catalog-management.resource-setting.setting.result' | i18n}}"></app-select>
-                    </div>
-                </div>
-            </form>
-        </div>
-        <div nz-row>
-            <div nz-col [nzSpan]="12" class="p-1">
-                <app-upload-file-attachment
-                    [labelCheckbox]="'catalog-management.resource-setting.upload.default.inventory'" [checkbox]="true"
-                    [default]="formSave.get('isFileInventory').value == 1 ? true : false"
-                    [listFiles]="listFileInventory" [isUploadFileModal]="true" [isMultiple]="false" [hideLabel]="false"
-                    labelContent="{{'catalog-management.resource-setting.upload.file.inventory' | i18n}}"
-                    [required]="true" [validMaxSize]="1" (deleteFile)="eventDeleteFileFromModal($event,1)"
-                    (fetchFile)="fetchFile($event,1)" [control]="formSave.get('inventoryFileDTO')"
-                    (onCheckbox)="changeCheckbox($event, 1)" [isEdit]="true"></app-upload-file-attachment>
-                <span style="color: #f5222d;"
-                    *ngIf="this.inventoryFileDTOEmpty && this.isSubmit">{{'common.error.require' | i18n :{key: 'Tải file
-                    Inventory'} }}</span>
-            </div>
-            <div nz-col [nzSpan]="12" class="p-1">
-                <app-upload-file-attachment
-                    [labelCheckbox]="'catalog-management.resource-setting.upload.default.inventory'" [checkbox]="true"
-                    [default]="formSave.get('isFilePlaybook').value  == 1 ? true : false" [listFiles]="listFilePlaybook"
-                    [isUploadFileModal]="true" [isMultiple]="false" [hideLabel]="false"
-                    labelContent="{{ 'catalog-management.resource-setting.upload.file.playbook' | i18n}}"
-                    [required]="true" [validMaxSize]="1" (deleteFile)="eventDeleteFileFromModal($event,2)"
-                    (fetchFile)="fetchFile($event,2)" [control]="formSave.get('playbookFileDTO')"
-                    (onCheckbox)="changeCheckbox($event, 2)" [isEdit]="true"></app-upload-file-attachment>
-                <span style="color: #f5222d;"
-                    *ngIf="this.playbookFileDTOEmpty && this.isSubmit">{{'common.error.require' | i18n :{key: 'Tải file
-                    Playbook'} }}</span>
-            </div>
-        </div>
-        <div nz-row>
-            <app-radio [data]="lstOption" [labelHorizontal]="false" [valueField]="'value'" required=t rue
-                [isNoborder]="true" labelContent="{{ 'catalog-management.resource-setting.option.setting' | i18n}}"
-                [(ngModel)]="option" (selectChange)="changeOption($event)"></app-radio>
-            <span style="color: #f5222d;" *ngIf="this.optionSettingEmpty && this.isSubmit">{{'common.error.require' |
-                i18n :{key: 'Lựa chọn cài đặt'} }}</span>
-        </div>
-
-        <!-- ********* EDIT START ************* -->
-        <div nz-row>
-            <div nz-col nzSpan="12" class="p-1" style="margin-top: 0.3rem">
-                <!-- <nz-checkbox-wrapper > -->
-                <div>
-                    <label class="create-another" nz-checkbox [formControl]="this.formSave.get('isCommand')"
-                        (ngModelChange)="onChangeCheckbox($event)">
-                        {{'catalog-management.resource-setting.run.new.query' | i18n}}
-                    </label>
-                </div>
-                <!-- </nz-checkbox-wrapper> -->
-            </div>
-        </div>
-
-        <div nz-row *ngIf="hideQuerySetting">
-            <div nz-col [nzSpan]="24" class="p-1">
-                <app-input-textarea #codeRef name="querySetting" required=true [span]="24" class="ng-invalid"
-                    [formControl]="this.formSave.get('querySetting')" [maxLength]="1000"
-                    labelContent="{{'catalog-management.resource-setting.query.setting' | i18n}}"></app-input-textarea>
-            </div>
-        </div>
-        <!-- ********* EDIT END *************** -->
-        <div nz-row>
-            <div nz-col nzSpan="24">
-                <div class="list__container">
-                    <div class="list__head">
-                        <div class="list__head-left">
-                            <div class="list__head-title">
-                                <span class="head-title">{{ 'catalog-management.resource-setting.history' | i18n
-                                    }}</span>
-                                <span class="head-count"><span class="head-count__bracket">(</span><span
-                                        class="head-count__number">{{ total }}</span><span
-                                        class="head-count__bracket">)</span></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="list__container" *ngIf="total > 0">
-                    <nz-table #rowSelectionTable nzBordered [nzData]="listHistorySetting" [nzFrontPagination]="false"
-                        [nzScroll]="{ x: SCROLL_TABLE.SCROLL_X}" [nzNoResult]="">
-                        <thead>
-                            <tr class="ant-header-customize">
-                                <th nzWidth="50px" class="text-center"> {{ 'list.table.stt' | i18n }}</th>
-                                <th nzWidth="150px" class="text-center">
-                                    {{ 'catalog-management.resource-setting.connect.status' | i18n }}<span
-                                        class="table-required"></span>
-                                </th>
-                                <th nzWidth="150px" class="text-center">
-                                    {{ 'catalog-management.inventory.table.inventory' | i18n }}<span
-                                        class="table-required"></span>
-                                </th>
-                                <th nzWidth="120px" class="text-center">
-                                    {{ 'catalog-management.inventory.table.playbook' | i18n }}
-                                </th>
-                                <th nzWidth="150px" class="text-center">
-                                    {{ 'catalog-management.inventory.table.playbook-uninstall' | i18n }}<span
-                                        class="table-required"></span>
-                                </th>
-                                <th nzWidth="150px" class="text-center">
-                                    {{ 'catalog-management.resource-setting.setting.result' | i18n }}<span
-                                        class="table-required"></span>
-                                </th>
-                                <th nzWidth="120px" class="text-center">
-                                    {{ 'catalog-management.resource-setting.time' | i18n }}
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let data of listHistorySetting; let index = index">
-                                <td class="text-center max-width-80">{{(request.page * request.size) + index + 1}}</td>
-                                <td class="max-width-120" [nz-tooltip]="getConnectName(data.connectServer)">
-                                    {{getConnectName(data.connectServer)}}</td>
-                                <td class="width-200" [nz-tooltip]="data.inventoryFileName">
-                                    <span
-                                        class="span-download text-ellipsis d-inline-block">{{data.inventoryFileName}}</span>
-                                    <app-button-icon *ngIf="data.inventoryFileName" [isDownloadFile]="true"
-                                        class="float-right"
-                                        (click)="downFile(data.inventoryFileId, data.inventoryFileName)">
-                                    </app-button-icon>
-                                </td>
-                                <td [nz-tooltip]="data.playbookFileName" class="width-200">
-                                    <span
-                                        class="span-download text-ellipsis d-inline-block">{{data.playbookFileName}}</span>
-                                    <app-button-icon *ngIf="data.playbookFileName" [isDownloadFile]="true"
-                                        class="float-right"
-                                        (click)="downFile(data.playbookFileId, data.playbookFileName)">
-                                    </app-button-icon>
-                                </td>
-                                <td [nz-tooltip]="data.playbookUnsName" class="width-200">
-                                    <span
-                                        class="span-download text-ellipsis d-inline-block">{{data.playbookUnsName}}</span>
-                                    <app-button-icon *ngIf="data.playbookUnsId" [isDownloadFile]="true"
-                                        class="float-right"
-                                        (click)="downFile(data.playbookUnsId, data.playbookUnsName)"></app-button-icon>
-                                </td>
-                                <td [nz-tooltip]="data.resultInstallFileName" class="width-200">
-                                    <span
-                                        class="span-download text-ellipsis d-inline-block">{{data.resultInstallFileName}}</span>
-                                    <app-button-icon *ngIf="data.resultInstallFileId" [isDownloadFile]="true"
-                                        class="float-right"
-                                        (click)="downFile(data.resultInstallFileId, data.resultInstallFileName)">
-                                    </app-button-icon>
-                                </td>
-                                <td [nz-tooltip]="data.createDate" class="max-width-200 text-center">{{data.createDate |
-                                    date: 'dd/MM/yyyy hh:mm:ss'}}</td>
-                            </tr>
-                        </tbody>
-                    </nz-table>
-                    <div nz-row class="list__pagination justify-content-start" *ngIf="total > 0">
-                        <div nz-col [nzSpan]="12">
-                            <app-paging [itemOfPage]="request.size" [currentPage]="request.page" [totalItems]="total"
-                                (changeCurrentPage)="changeCurrentPage($event)"
-                                (changeItemPerPage)="changeItemPerPage($event)"></app-paging>
-                        </div>
-                    </div>
-                </div>
-                <app-no-result *ngIf="total === 0">
-                </app-no-result>
-            </div>
-        </div>
-    </nz-card>
-    <div nz-row class="nz-card__form-action pt-4 text-center">
-        <app-button-cancel [isIcon]="false" [popConfirm]="false" (clickCancel)="openConfirmCancel()">
-        </app-button-cancel>
-        <app-button-setting text="Cài đặt" (clickSetting)="submitForm()"></app-button-setting>
+  <app-breadcrumb *ngIf="isBreadcrumb" [listBreadCrumb]="breadcrumbs"></app-breadcrumb>
+  <nz-card class="nz-card__form" [nzBordered]="false">
+    <div nz-row>
+      <div nz-col nzSpan="24">
+        <app-title-header-layout>
+          <span>{{'breadcrumb.resource-setting.update' | i18n}} {{getFieldValue('code')}}</span>
+        </app-title-header-layout>
+      </div>
     </div>
+    <div nz-row>
+      <form nz-form [formGroup]="formSave" (ngSubmit)="submitForm()">
+        <div nz-row>
+          <div nz-col [nzSpan]="6" class="p-1">
+            <app-input-text required="true" formControlName="code"
+                            [disabled]="true"
+                            labelContent="{{ 'catalog-management.resource-setting.code' | i18n}}">
+            </app-input-text>
+          </div>
+          <div nz-col [nzSpan]="6" class="p-1">
+            <app-input-text required="true" formControlName="name"
+                            [disabled]="true"
+                            labelContent="{{ 'catalog-management.resource-setting.title.sr' | i18n}}"></app-input-text>
+          </div>
+          <div nz-col [nzSpan]="6" class="p-1">
+            <app-input-text formControlName="serviceName" required="true" [disabled]="true"
+                            labelContent="{{ 'catalog-management.inventory.table.service' | i18n}}"></app-input-text>
+          </div>
+          <div nz-col [nzSpan]="6" class="p-1">
+            <app-input-text formControlName="serviceModelName" required="true" [disabled]="true"
+                            labelContent="{{ 'catalog-management.inventory.table.service-model' | i18n}}"></app-input-text>
+          </div>
+        </div>
+        <div nz-row>
+          <div nz-col nzSpan="6" class="p-1">
+            <app-input-text formControlName="unitRequest" [disabled]="true"
+                            required="true" labelContent="{{'catalog-management.resource-setting.request.org' | i18n}}"></app-input-text>
+          </div>
+          <div nz-col nzSpan="6" class="p-1">
+            <app-input-text formControlName="emailRequest" [disabled]="true"
+                            required="true" labelContent="{{'catalog-management.resource-setting.request.email' | i18n}}"></app-input-text>
+          </div>
+          <div nz-col nzSpan="6" class="p-1">
+            <app-select [data]="lstConnect"
+                        [openSearchModal]="false"
+                        [getObjectValue]="true"
+                        [labelHorizontal]="false"
+                        [disabled]="true"
+                        formControlName="connectServer"
+                        [valueField]="'value'"
+                        required="true"
+                        labelContent="{{'catalog-management.resource-setting.connect.status' | i18n}}"></app-select>
+          </div>
+          <div nz-col nzSpan="6" class="p-1">
+            <app-select [data]="lstStatus" formControlName="statusSetting"
+                        [openSearchModal]="false"
+                        [getObjectValue]="true"
+                        [labelHorizontal]="false"
+                        [valueField]="'value'"
+                        [disabled]="true"
+                        required="true" labelContent="{{'catalog-management.resource-setting.setting.result' | i18n}}"></app-select>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div nz-row>
+      <div nz-col [nzSpan]="12" class="p-1">
+        <app-upload-file-attachment
+          [labelCheckbox]="'catalog-management.resource-setting.upload.default.inventory'"
+          [checkbox]="true"
+          [default]="formSave.get('isFileInventory').value == 1 ? true : false"
+          [listFiles]="listFileInventory"
+          [isUploadFileModal]="true"
+          [isMultiple]="false"
+          [hideLabel]="false"
+          labelContent="{{'catalog-management.resource-setting.upload.file.inventory' | i18n}}"
+          [required]="true"
+          [validMaxSize]="1"
+          (deleteFile)="eventDeleteFileFromModal($event,1)"
+          (fetchFile)="fetchFile($event,1)"
+          [control]="formSave.get('inventoryFileDTO')"
+          (onCheckbox) = "changeCheckbox($event, 1)"
+          [isEdit]="true"
+        ></app-upload-file-attachment>
+        <span style="color: #f5222d;"
+              *ngIf="this.inventoryFileDTOEmpty && this.isSubmit">{{'common.error.require' | i18n :{key: 'Tải file Inventory'} }}</span>
+      </div>
+<!--      <div nz-col [nzSpan]="12" class="p-1">-->
+<!--        <app-upload-file-attachment-->
+<!--          [labelCheckbox]="'catalog-management.resource-setting.upload.default.inventory'"-->
+<!--          [checkbox]="true"-->
+<!--          [default]="formSave.get('isFilePlaybook').value  == 1 ? true : false"-->
+<!--          [listFiles]="listFilePlaybook"-->
+<!--          [isUploadFileModal]="true"-->
+<!--          [isMultiple]="false"-->
+<!--          [hideLabel]="false"-->
+<!--          labelContent="{{ 'catalog-management.resource-setting.upload.file.playbook' | i18n}}"-->
+<!--          [required]="true"-->
+<!--          [validMaxSize]="1"-->
+<!--          (deleteFile)="eventDeleteFileFromModal($event,2)"-->
+<!--          (fetchFile)="fetchFile($event,2)"-->
+<!--          [control]="formSave.get('playbookFileDTO')"-->
+<!--          (onCheckbox) = "changeCheckbox($event, 2)"-->
+<!--          [isEdit]="true"-->
+<!--        ></app-upload-file-attachment>-->
+<!--        <span style="color: #f5222d;"-->
+<!--              *ngIf="this.playbookFileDTOEmpty && this.isSubmit">{{'common.error.require' | i18n :{key: 'Tải file Playbook'} }}</span>-->
+<!--      </div>-->
+    </div>
+    <div nz-row>
+      <app-radio [data]="lstOption" [labelHorizontal]="false"
+                 [valueField]="'value'"
+                 required = true
+                 [isNoborder]="true"
+                 labelContent="{{ 'catalog-management.resource-setting.option.setting' | i18n}}"
+                 [(ngModel)]="option"
+                 (selectChange)="changeOption($event)"
+                 ></app-radio>
+      <span style="color: #f5222d;" *ngIf="this.optionSettingEmpty && this.isSubmit">{{'common.error.require' | i18n :{key: 'Lựa chọn cài đặt'} }}</span>
+    </div>
+
+    <div nz-row>
+      <div nz-col nzSpan="12" class="p-1" style="margin-top: 0.3rem">
+        <!-- <nz-checkbox-wrapper > -->
+          <div>
+            <label class="create-another" nz-checkbox [formControl] = "this.formSave.get('isCommand')" (ngModelChange)="onChangeCheckbox($event)" >
+              {{'catalog-management.resource-setting.run.new.query' | i18n}}
+            </label>
+          </div>
+        <!-- </nz-checkbox-wrapper> -->
+      </div>
+    </div>
+
+    <div nz-row *ngIf="hideQuerySetting">
+      <div nz-col [nzSpan]="24" class="p-1">
+        <app-input-textarea #codeRef
+          name="querySetting"
+          required = true
+          [span] = "24"
+          class="ng-invalid"
+          [formControl] = "this.formSave.get('querySetting')"
+          [maxLength]="1000"
+          labelContent="{{'catalog-management.resource-setting.query.setting' | i18n}}"></app-input-textarea>
+      </div>
+    </div>
+
+    <div nz-row>
+      <div nz-col nzSpan="24">
+        <div class="list__container">
+          <div class="list__head">
+            <div class="list__head-left">
+              <div class="list__head-title">
+                  <span
+                    class="head-title">{{ 'catalog-management.resource-setting.history' | i18n }}</span>
+                <span class="head-count"
+                ><span class="head-count__bracket">(</span><span class="head-count__number">{{ total }}</span
+                ><span class="head-count__bracket">)</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="list__container" *ngIf="total > 0">
+          <nz-table
+              #rowSelectionTable
+              nzBordered
+              [nzData]="listHistorySetting"
+              [nzFrontPagination]="false"
+              [nzScroll]="{ x: SCROLL_TABLE.SCROLL_X}"
+              [nzNoResult]=""
+          >
+            <thead>
+              <tr class="ant-header-customize">
+                <th nzWidth="50px" class="text-center">  {{ 'list.table.stt' | i18n }}</th>
+                <th nzWidth="150px" class="text-center">
+                  {{ 'catalog-management.resource-setting.connect.status' | i18n }}<span
+                  class="table-required"></span>
+                </th>
+                <th nzWidth="150px" class="text-center">
+                  {{ 'catalog-management.inventory.table.inventory' | i18n }}<span
+                  class="table-required"></span>
+                </th>
+                <th nzWidth="120px" class="text-center">
+                  {{ 'catalog-management.inventory.table.playbook' | i18n }}
+                </th>
+                <th nzWidth="150px" class="text-center">
+                  {{ 'catalog-management.inventory.table.playbook-uninstall' | i18n }}<span
+                  class="table-required"></span>
+                </th>
+                <th nzWidth="150px" class="text-center">
+                  {{ 'catalog-management.resource-setting.setting.result' | i18n }}<span
+                  class="table-required"></span>
+                </th>
+                <th nzWidth="120px" class="text-center">
+                  {{ 'catalog-management.resource-setting.time' | i18n }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let data of listHistorySetting; let index = index">
+                <td class="text-center max-width-80">{{(request.page * request.size) + index + 1}}</td>
+                <td class="max-width-120" [nz-tooltip]="getConnectName(data.connectServer)">{{getConnectName(data.connectServer)}}</td>
+                <td class="width-200" [nz-tooltip]="data.inventoryFileName">
+                  <span class="span-download text-ellipsis d-inline-block">{{data.inventoryFileName}}</span>
+                  <app-button-icon *ngIf="data.inventoryFileName" [isDownloadFile]="true"  class="float-right"
+                                   (click)="downFile(data.inventoryFileId, data.inventoryFileName)"></app-button-icon>
+                </td>
+                <td [nz-tooltip]="data.playbookFileName" class="width-200">
+                  <span class="span-download text-ellipsis d-inline-block">{{data.playbookFileName}}</span>
+                  <app-button-icon *ngIf="data.playbookFileName" [isDownloadFile]="true" class="float-right"
+                                   (click)="downFile(data.playbookFileId, data.playbookFileName)"
+                  ></app-button-icon>
+                </td>
+                <td [nz-tooltip]="data.playbookUnsName" class="width-200">
+                  <span class="span-download text-ellipsis d-inline-block">{{data.playbookUnsName}}</span>
+                  <app-button-icon *ngIf="data.playbookUnsId" [isDownloadFile]="true" class="float-right"
+                                   (click)="downFile(data.playbookUnsId, data.playbookUnsName)"></app-button-icon>
+                </td>
+                <td [nz-tooltip]="data.resultInstallFileName" class="width-200">
+                  <span class="span-download text-ellipsis d-inline-block">{{data.resultInstallFileName}}</span>
+                  <app-button-icon *ngIf="data.resultInstallFileId" [isDownloadFile]="true" class="float-right"
+                                   (click)="downFile(data.resultInstallFileId, data.resultInstallFileName)"></app-button-icon>
+                </td>
+                <td [nz-tooltip]="data.createDate | date: 'dd/MM/yyyy HH:mm:ss'" class="max-width-200 text-center">{{data.createDate | date: 'dd/MM/yyyy HH:mm:ss'}}</td>
+              </tr>
+            </tbody>
+          </nz-table>
+          <div nz-row class="list__pagination justify-content-start" *ngIf="total > 0">
+            <div nz-col [nzSpan]="12">
+              <app-paging
+                [itemOfPage]="request.size"
+                [currentPage]="request.page"
+                [totalItems]="total"
+                (changeCurrentPage)="changeCurrentPage($event)"
+                (changeItemPerPage)="changeItemPerPage($event)"
+              ></app-paging>
+            </div>
+          </div>
+        </div>
+        <app-no-result *ngIf="total === 0">
+        </app-no-result>
+      </div>
+    </div>
+  </nz-card>
+  <div nz-row class="nz-card__form-action pt-4 text-center">
+    <app-button-cancel [isIcon]="false"
+                       [popConfirm]="false"
+                       (clickCancel)="openConfirmCancel()"></app-button-cancel>
+    <app-button-setting text="Cài đặt" (clickSetting)="submitForm()"></app-button-setting>
+  </div>
 </page-header-wrapper>
-<app-modal-confirm title="{{'layout.btn.confirm' | i18n}}" [isVisible]="isViewConfirmCancel"
-    content="{{ 'common.cancel.confirm.content' | i18n}}" textButtonCancel="{{'layout.btn.reject' | i18n}}"
-    [isConfirm]="true" (clickConfirm)="cancel()" (clickCancel)="onCancelConfirm()"></app-modal-confirm>
+<app-modal-confirm
+  title="{{'layout.btn.confirm' | i18n}}"
+  [isVisible] = "isViewConfirmCancel"
+  content = "{{ 'common.cancel.confirm.content' | i18n}}"
+  textButtonCancel="{{'layout.btn.reject' | i18n}}"
+  [isConfirm]="true"
+  (clickConfirm)="cancel()"
+  (clickCancel)="onCancelConfirm()"
+></app-modal-confirm>

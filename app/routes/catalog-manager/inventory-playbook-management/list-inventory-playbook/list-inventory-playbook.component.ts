@@ -151,8 +151,8 @@ export class ListInventoryPlaybookComponent implements OnInit, AfterViewInit, Af
     });
   }
 
-  onDownloadFile(fileId: any, fileName: any) {
-    this.fileManagerService.downloadFileById(fileId, fileName);
+  onDownloadFile(filePath: any, fileName: any) {
+    this.fileManagerService.downloadFileByPath(filePath, fileName);
   }
 
   goToEdit(data: any) {
@@ -166,22 +166,27 @@ export class ListInventoryPlaybookComponent implements OnInit, AfterViewInit, Af
   }
 
   callBackModalDelete(event: any) {
+    this.spinner.show();
     this.inventoryPlaybookService.delete(this.selectedId).subscribe(res => {
-      if (res.data != "1") {
-        this.toastService.openErrorToast(this.translateService.instant('catalog-management.inventory.delete.error', {
-          code: this.selectedCode,
-          srCode: res.data
-        }), null);
-        this.isVisibleModalDelete = false;
-      } else {
-        this.toastService.openSuccessToast(this.translateService.instant('catalog-management.inventory.delete.success'), null);
-        this.isVisibleModalDelete = false;
-        if (this.lstData.length == 1) {
-          this.request.page = this.request.page > 0 ? this.request.page - 1 : 0;
+        if (res.data != "1") {
+          this.toastService.openErrorToast(this.translateService.instant('catalog-management.inventory.delete.error', {
+            code: this.selectedCode,
+            srCode: res.data
+          }), null);
+          this.isVisibleModalDelete = false;
+        } else {
+          this.toastService.openSuccessToast(this.translateService.instant('catalog-management.inventory.delete.success'), null);
+          this.isVisibleModalDelete = false;
+          if (this.lstData.length == 1) {
+            this.request.page = this.request.page > 0 ? this.request.page - 1 : 0;
+          }
+          this.fetchInventory();
+          this.spinner.hide();
         }
-        this.fetchInventory();
-      }
-    })
+      },
+      error => {
+        this.spinner.hide();
+      })
   }
 
   onCancelModalDelete() {

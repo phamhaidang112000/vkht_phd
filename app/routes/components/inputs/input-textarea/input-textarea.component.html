@@ -17,6 +17,7 @@
       [placeholder]="isPlaceHolder ? placeHolder : ''"
       (focus)="onFocus(inputTextareaRef.value)"
       (blur)="onBlur(inputTextareaRef.value)"
+      [maxLength]="maxLength"
     ></textarea>
       <ng-template #inputTextareaClearTpl>
         <i

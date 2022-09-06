@@ -39,13 +39,19 @@
     </nz-input-group>
     <ng-template #combineTpl let-control >
       <ng-container *ngIf="control.hasError('required')">{{errorTip}}</ng-container>
+
+      <ng-container *ngIf="control.hasError('empty')">{{'catalog-management.inventory.folder.error' | i18n}}</ng-container>
+
       <ng-container *ngIf="control.hasError('pattern')">{{labelContent}} không đúng định
         dạng
       </ng-container>
       <ng-container *ngIf="control.hasError('excelPattern')">Bạn nhập không đúng định dạng quy định, vui lòng sửa lại cho đúng. VD: A5; C9; E8</ng-container>
       <ng-container *ngIf="control.hasError('unique')">{{labelContent}} đã tồn tại</ng-container>
 
-      <ng-container *ngIf="control.hasError('maxlength') && !control.hasError('pattern')">{{labelContent}} chỉ nhập tối đa {{maxLength}} ký
+      <ng-container *ngIf="control.hasError('maxlength') && !control.hasError('pattern') && maxLengthError">{{labelContent}} không được vượt quá {{maxLength}} ký
+        tự
+      </ng-container>
+      <ng-container *ngIf="control.hasError('maxlength') && !control.hasError('pattern') && !maxLengthError">{{labelContent}} chỉ nhập tối đa {{maxLength}} ký
         tự
       </ng-container>
       <ng-container *ngIf="control.hasError('percent1')">{{labelContent}} chỉ nhập tối đa 3 ký tự tại phần nguyên

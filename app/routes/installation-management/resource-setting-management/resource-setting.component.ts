@@ -7,21 +7,21 @@ import {
   OnInit,
   ViewChild
 } from '@angular/core';
-import { TranslateService } from "@ngx-translate/core";
-import { Router } from "@angular/router";
-import { FormBuilder, FormControl } from "@angular/forms";
-import { NgxSpinnerService } from "ngx-spinner";
-import { NzModalService } from "ng-zorro-antd";
-import { AppParamsService } from "../../../services/app-params/app-params.service";
-import { APP_PARAMS_TYPE, SCROLL_TABLE } from "../../../utils";
+import {TranslateService} from "@ngx-translate/core";
+import {Router} from "@angular/router";
+import {FormBuilder, FormControl} from "@angular/forms";
+import {NgxSpinnerService} from "ngx-spinner";
+import {NzModalService} from "ng-zorro-antd";
+import {AppParamsService} from "../../../services/app-params/app-params.service";
+import {APP_PARAMS_TYPE, SCROLL_TABLE} from "../../../utils";
 // @ts-ignore
-import { InstallationManagementService } from '../../../services/installation-management/installation-management.service';
-import { ServiceManagementService } from "../../../services/service-management/service-management.service";
-import { BehaviorSubject, Observable } from "rxjs";
-import { debounceTime } from "rxjs/operators";
-import { FileManagerService } from "../../../services/file-manager/file-manager.service";
-import { InputTextComponent } from "../../components/inputs/input-text/input-text.component";
-import { ToastService } from "@shared";
+import {InstallationManagementService} from '../../../services/installation-management/installation-management.service';
+import {ServiceManagementService} from "../../../services/service-management/service-management.service";
+import {BehaviorSubject, Observable} from "rxjs";
+import {debounceTime} from "rxjs/operators";
+import {FileManagerService} from "../../../services/file-manager/file-manager.service";
+import {InputTextComponent} from "../../components/inputs/input-text/input-text.component";
+import {ToastService} from "@shared";
 
 @Component({
   selector: 'app-resource-setting',
@@ -29,7 +29,7 @@ import { ToastService } from "@shared";
   styleUrls: ['./resource-setting.component.less']
 })
 export class ResourceSettingComponent implements OnInit, AfterViewInit, AfterViewChecked {
-  @ViewChild('codeRef', { static: false }) codeRef: InputTextComponent;
+  @ViewChild('codeRef', {static: false}) codeRef: InputTextComponent;
   breadcrumbs: any = [];
   isBreadcrumb = false;
   searchForm: any;
@@ -49,12 +49,10 @@ export class ResourceSettingComponent implements OnInit, AfterViewInit, AfterVie
   lstConnect: any[] = [];
   SCROLL_TABLE = SCROLL_TABLE;
   connectObj: any;
-  // ********* EDIT START **************
   isViewConfirmCancel: any;
   lstFileImport: any[] = [];
   lstServiceModel: any[] = [];
   serviceModels: any[] = [];
-  //********** EDIT END ****************
 
   constructor(
     private translateService: TranslateService,
@@ -69,7 +67,8 @@ export class ResourceSettingComponent implements OnInit, AfterViewInit, AfterVie
     private serviceMgmtService: ServiceManagementService,
     private fileManagerService: FileManagerService,
     private toastService: ToastService,
-  ) { }
+  ) {
+  }
 
   ngOnInit() {
     this.setBreadcrumb();
@@ -86,11 +85,9 @@ export class ResourceSettingComponent implements OnInit, AfterViewInit, AfterVie
     this.buildForm();
     this.initSearchService();
     this.nzOnSearch();
-    // ****** EDIT START ***********
     setInterval(() => {
       this.nzOnSearch();
     }, 30000);
-    // ****** EDIT END ************
   }
 
   ngAfterViewChecked(): void {
@@ -101,6 +98,7 @@ export class ResourceSettingComponent implements OnInit, AfterViewInit, AfterVie
 
     this.codeRef.focus();
   }
+
   setBreadcrumb() {
     this.breadcrumbs = [
       {
@@ -110,6 +108,7 @@ export class ResourceSettingComponent implements OnInit, AfterViewInit, AfterVie
     ];
     this.isBreadcrumb = true;
   }
+
   buildForm() {
     this.searchForm = this.formBuilder.group({
       code: [null],
@@ -119,12 +118,11 @@ export class ResourceSettingComponent implements OnInit, AfterViewInit, AfterVie
       emailRequest: [null],
       connectServer: 0,
       statusSetting: [null],
-      // ******** EDIT START *********
       fileImport: [null],
       serviceModel: [null]
-      // ******* EDIT END *************
     });
   }
+
   initSearchService() {
     const optionList$: Observable<any> = this.searchService$.asObservable().pipe(debounceTime(500));
     optionList$.subscribe(value => {
@@ -137,6 +135,7 @@ export class ResourceSettingComponent implements OnInit, AfterViewInit, AfterVie
       this.lstService = rs.data;
     });
   }
+
   nzOnSearch() {
     this.request.page = 0;
     this.fetchInstallation();
@@ -148,6 +147,7 @@ export class ResourceSettingComponent implements OnInit, AfterViewInit, AfterVie
       this.total = test.data.totalElements;
     });
   }
+
   showEdit(id) {
     this.installationManagementService.getDetail(id).subscribe(res => {
       if (res && res.data.statusSetting == 4) {
@@ -158,19 +158,25 @@ export class ResourceSettingComponent implements OnInit, AfterViewInit, AfterVie
     }, error => {
     })
   }
+
   downFile(idx: number, fileName: any) {
     this.fileManagerService.downloadFileById(idx, fileName);
   }
+
   getConnectName(value) {
     const obj = this.lstConnect.find(x => x.value === value);
     return obj ? obj.name : '';
   }
+
   getColorTagConnect(value) {
     switch (value) {
-      case 1: return 'disconnect';
-      case 2: return 'connect';
+      case 1:
+        return 'disconnect';
+      case 2:
+        return 'connect';
     }
   }
+
   reSync(data) {
     this.spinner.show();
     this.installationManagementService.getDetail(data.id).subscribe(res => {
@@ -193,20 +199,24 @@ export class ResourceSettingComponent implements OnInit, AfterViewInit, AfterVie
     });
 
   }
+
   getResultName(value) {
     const obj = this.lstStatus.find(x => x.value === value);
     return obj ? obj.name : '';
   }
+
   changeCurrentPage(currentPage: number) {
     this.request.page = currentPage;
     this.request.currentPage = currentPage;
     this.fetchInstallation();
   }
+
   changeItemPerPage(itemPerPage: number) {
     this.request.page = 0;
     this.request.size = itemPerPage;
     this.fetchInstallation();
   }
+
   getBackGround(data): string {
     if (data.statusSetting === 1) {
       return 'table-tr-not-setting';
@@ -226,7 +236,6 @@ export class ResourceSettingComponent implements OnInit, AfterViewInit, AfterVie
     });
   }
 
-  // ******** EDIT START ***********
   importExcel() {
     this.isViewConfirmCancel = true;
   }
@@ -238,5 +247,5 @@ export class ResourceSettingComponent implements OnInit, AfterViewInit, AfterVie
   onCallBack() {
     this.nzOnSearch();
   }
-  // ******** EDIT END ************
+
 }

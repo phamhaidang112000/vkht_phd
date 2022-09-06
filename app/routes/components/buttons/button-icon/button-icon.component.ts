@@ -13,7 +13,6 @@ export class ButtonIconComponent implements OnInit {
   @Input() disabled = false;
   @Input() isEdit = false;
   @Input() isViewDetail = false;
-  @Input() isContinue = false;
   @Input() isUploadFile = false;
   @Input() isDelete = false;
   @Input() isAddUser = false;

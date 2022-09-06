@@ -174,82 +174,40 @@ export class LayoutProComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // init menu
     const lstMenu2 = [];
+    const dashboardManager = {
+      name: 'Dashboad',
+      code: 'menu.dashboad-management',
+      iconClass: 'sidebar-menu-icon icon__catalog',
+      urlRewrite: '/dashboard',
+      // subChild: [],
+    }
+    lstMenu2.push(dashboardManager);
+
     const catalogManager = {
       name: 'Quản lý cấu hình',
       code: 'menu.catalog-management',
-      iconClass: 'sidebar-menu-icon icon__catalog',
+      iconClass: 'sidebar-menu-icon icon__vector',
       urlRewrite: '',
       subChild: [],
     }
 
-    // catalogManager.subChild.push({
-    //   name: 'Quản lý Storage',
-    //   code: 'menu.storage-management',
-    //   iconClass: 'sidebar-menu-icon icon__catalog',
-    //   urlRewrite: 'catalog-management/storage',
-    //   subChild: [],
-    // })
-
-    // catalogManager.subChild.push({
-    //   name: 'Quản lý Server Group',
-    //   code: 'menu.server-group-management',
-    //   iconClass: 'sidebar-menu-icon icon__catalog',
-    //   urlRewrite: 'catalog-management/server-group',
-    //   subChild: [],
-    // })
-
-    // catalogManager.subChild.push({
-    //   name: 'Quản lý Server Service',
-    //   code: 'menu.server-service-management',
-    //   iconClass: 'sidebar-menu-icon icon__catalog',
-    //   urlRewrite: 'catalog-management/server-service',
-    //   subChild: [],
-    // })
-
     catalogManager.subChild.push({
       name: 'Quản lý dịch vụ',
       code: 'menu.service-management',
-      iconClass: 'sidebar-menu-icon icon__catalog',
+      iconClass: 'sidebar-menu-icon icon__vector',
       urlRewrite: 'catalog-management/service',
       subChild: [],
     })
     catalogManager.subChild.push({
       name: 'Quản lý dịch vụ',
       code: 'menu.inventory-management',
-      iconClass: 'sidebar-menu-icon icon__catalog',
+      iconClass: 'sidebar-menu-icon icon__vector',
       urlRewrite: 'catalog-management/inventory-playbook',
       subChild: [],
     })
-    catalogManager.subChild.push({
-      name: 'Thông tin Openstack',
-      code: 'menu.setting-management',
-      iconClass: 'sidebar-menu-icon icon__catalog',
-      urlRewrite: 'catalog-management/setting/detail/1',
-      subChild: [],
-    })
-    // catalogManager.subChild.push({
-    //   name: 'Quản lý flavor',
-    //   code: 'menu.flavor-management',
-    //   iconClass: 'sidebar-menu-icon icon__catalog',
-    //   urlRewrite: 'catalog-management/flavor',
-    //   subChild: [],
-    // })
-    // catalogManager.subChild.push({
-    //   name: 'Quản lý network',
-    //   code: 'menu.network-management',
-    //   iconClass: 'sidebar-menu-icon icon__catalog',
-    //   urlRewrite: 'catalog-management/network',
-    //   subChild: [],
-    // })
-    // catalogManager.subChild.push({
-    //   name: 'Quản lý Os',
-    //   code: 'menu.os-management',
-    //   iconClass: 'sidebar-menu-icon icon__catalog',
-    //   urlRewrite: 'catalog-management/os',
-    //   subChild: [],
-    // })
 
     lstMenu2.push(catalogManager);
+    // }
 
     const installationManager = {
       name: 'Quản lý cài đặt tài nguyên',
@@ -260,33 +218,7 @@ export class LayoutProComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     lstMenu2.push(installationManager);
-
-    const serverManager = {
-      name: 'Quản lý cấp phát server',
-      code: 'menu.server-management',
-      iconClass: 'sidebar-menu-icon icon__catalog',
-      urlRewrite: '',
-      subChild: []
-    }
-
-    serverManager.subChild.push({
-      name: 'Quản lý VM',
-      code: 'menu.vm-management',
-      iconClass: 'sidebar-menu-icon icon__catalog',
-      urlRewrite: 'catalog-management/server',
-      subChild: [],
-    })
-
-    serverManager.subChild.push({
-      name: 'Quản lý SR',
-      code: 'menu.sr-management',
-      iconClass: 'sidebar-menu-icon icon__catalog',
-      urlRewrite: 'catalog-management/sr',
-      subChild: [],
-    })
-
-    lstMenu2.push(serverManager);
-
+    
     const rootMenu = [
       {
         text: 'Trang chủ',
