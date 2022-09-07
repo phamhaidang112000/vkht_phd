@@ -1,13 +1,8 @@
-<button
-  (click)="onClickAction()"
-  nz-button
-  [nzType]="buttonType"
-  [nzSize]="buttonSize"
-  [disabled]="disabled"
-  nzTooltipTitle="{{tooltipTitle? (tooltipTitle | i18n) :''}}"
-  nzTooltipPlacement="{{TOOLTIP.PLACEMENT_TOP}}"
-  nz-tooltip
->
+<button (click)="onClickAction()" nz-button [nzType]="buttonType" [nzSize]="buttonSize" [disabled]="disabled" nzTooltipTitle="{{tooltipTitle? (tooltipTitle | i18n) :''}}" nzTooltipPlacement="{{TOOLTIP.PLACEMENT_TOP}}" nz-tooltip>
+
+  <ng-container *ngIf="isContinue">
+    <i nz-icon nzType="play-circle" nzTheme="fill" class="icon__add-user"></i>
+  </ng-container>
   <ng-container *ngIf="isEdit">
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path

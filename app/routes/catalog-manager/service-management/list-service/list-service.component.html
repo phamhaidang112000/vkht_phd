@@ -1,155 +1,101 @@
 <!--<app-loading></app-loading>-->
 <page-header-wrapper>
-  <app-breadcrumb *ngIf="isBreadcrumb" [listBreadCrumb]="breadcrumbs"></app-breadcrumb>
-  <div nz-row>
-    <nz-card nz-row>
-      <nz-collapse [nzBordered]="false">
-<!--        <nz-collapse-panel-->
-<!--            #searchPanel-->
-<!--            [nzExpandedIcon]="searchExpandedIcon"-->
-<!--            [nzActive]="true"-->
-<!--            [nzHeader]="'common.card.search.title' | i18n"-->
-<!--        >-->
-<!--          <ng-template #searchExpandedIcon let-active-->
-<!--          >{{ active }}-->
-<!--            <i nz-icon nzType="caret-right" class="ant-collapse-arrow" [nzRotate]="searchPanel.nzActive ? 90 : -90"></i>-->
-<!--          </ng-template>-->
-          <form nz-form [formGroup]="searchForm">
-            <div class="alt-row__container">
-              <div class="alt-row__item">
-                <app-input-text
-                    #codeRef placeHolder = 'Nhập mã'
-                    formControlName="code"
-                    labelContent="{{ 'catalog-management.service.table.code' | i18n }}"
-                ></app-input-text>
-              </div>
+    <app-breadcrumb *ngIf="isBreadcrumb" [listBreadCrumb]="breadcrumbs"></app-breadcrumb>
+    <div nz-row>
+        <nz-card nz-row>
+            <nz-collapse [nzBordered]="false">
+                <nz-collapse-panel #searchPanel [nzExpandedIcon]="searchExpandedIcon" [nzActive]="true" [nzHeader]="'common.card.search.title' | i18n">
+                    <ng-template #searchExpandedIcon let-active>{{ active }}
+                        <i nz-icon nzType="caret-right" class="ant-collapse-arrow" [nzRotate]="searchPanel.nzActive ? 90 : -90"></i>
+                    </ng-template>
+                    <form nz-form [formGroup]="searchForm">
+                        <div class="alt-row__container">
+                            <div class="alt-row__item">
+                                <app-input-text #codeRef placeHolder='Nhập mã' formControlName="code" labelContent="{{ 'catalog-management.service.table.code' | i18n }}"></app-input-text>
+                            </div>
 
-              <div class="alt-row__item">
-                <app-input-text placeHolder = 'Nhập tên' formControlName="name" labelContent="{{ 'catalog-management.service.table.name' | i18n }}"
-                ></app-input-text>
-              </div>
-              <div class="alt-row__item">
-                <app-select
-                  [data]="serviceModels"
-                  [placeHolder]="'--Tất cả--'"
-                  [openSearchModal]="false"
-                  [getObjectValue]="true"
-                  [labelHorizontal]="false"
-                  [isSearch]="true"
-                  valueField="value"
-                  formControlName="serviceModel"
-                  (selectChange)="selectChangeService()"
-                  labelContent="{{'catalog-management.service.table.description' | i18n}}"
-                ></app-select>
-              </div>
-            </div>
-            <div class="d-flex justify-content-center btn-search__container">
-              <app-button-base
-                iconType="search"
-                (clickAction)="nzOnSearch()"
-                text="{{ 'layout.btn.search' | i18n }}"
-              ></app-button-base>
-            </div>
-          </form>
-<!--        </nz-collapse-panel>-->
-      </nz-collapse>
-    </nz-card>
-  </div>
-  <div nz-row class="mb-0">
-    <nz-card >
-      <div class="list__container">
-        <div class="list__head">
-          <div class="list__head-left">
-            <div class="list__head-title">
-                  <span
-                    class="head-title">{{ 'catalog-management.service.label.resultTitle' | i18n : {total: ""} }}</span>
-              <span class="head-count"
-              ><span class="head-count__bracket">(</span><span class="head-count__number">{{ total }}</span
+                            <div class="alt-row__item">
+                                <app-input-text placeHolder='Nhập tên' formControlName="name" labelContent="{{ 'catalog-management.service.table.name' | i18n }}"></app-input-text>
+                            </div>
+                            <div class="alt-row__item">
+                                <app-select [data]="serviceModels" [placeHolder]="'--Tất cả--'" [openSearchModal]="false" [getObjectValue]="true" [labelHorizontal]="false" [isSearch]="true" valueField="value" formControlName="serviceModel" (selectChange)="selectChangeService()" labelContent="{{'catalog-management.service.table.description' | i18n}}"></app-select>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-center btn-search__container">
+                            <app-button-base iconType="search" (clickAction)="nzOnSearch()" text="{{ 'layout.btn.search' | i18n }}"></app-button-base>
+                        </div>
+                    </form>
+                </nz-collapse-panel>
+            </nz-collapse>
+        </nz-card>
+    </div>
+    <div nz-row class="mb-0">
+        <nz-card>
+            <div class="list__container">
+                <div class="list__head">
+                    <div class="list__head-left">
+                        <div class="list__head-title">
+                            <span class="head-title">{{ 'catalog-management.service.label.resultTitle' | i18n : {total: ""} }}</span>
+                            <span class="head-count"><span class="head-count__bracket">(</span><span class="head-count__number">{{ total }}</span
               ><span class="head-count__bracket">)</span></span>
+                        </div>
+                    </div>
+                    <div class="list__head-right">
+                        <div class="list__head-btn">
+                            <app-button-create [buttonType]="'link'" nz-tooltip="{{ 'layout.btn.create' | i18n}}" (clickCreate)="onCreate()"></app-button-create>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-          <div class="list__head-right">
-            <div class="list__head-btn">
-              <app-button-create
-                [buttonType]="'link'"
-                nz-tooltip="{{ 'layout.btn.create' | i18n}}"
-                (clickCreate)="onCreate()"
-              ></app-button-create>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="list__table" *ngIf="total > 0">
-        <nz-table
-            #rowSelectionTable
-            nzBordered
-            [nzData]="lstData"
-            [nzFrontPagination]="false"
-            [nzScroll]="{ x: SCROLL_TABLE.SCROLL_X}"
-            [nzNoResult]=""
-        >
-          <thead>
-          <tr class="ant-header-customize">
-            <th nzWidth="30px" class="text-center">
-              {{ 'list.table.stt' | i18n }}
-            </th>
-            <th  nzWidth="200px">
-              {{ 'catalog-management.service.table.code' | i18n }}
-            </th>
-            <th  nzWidth="200px">
-              {{ 'catalog-management.service.table.name' | i18n }}
-            </th>
-            <th  nzWidth="200px">
-              {{ 'catalog-management.service.table.description' | i18n }}
-            </th>
-            <th  nzWidth="200px">
-              {{ 'catalog-management.service.table.note' | i18n }}
-            </th>
-            <th nzWidth="100px">
-              {{ 'common.list.table.hanh-dong' | i18n }}
-            </th>
+            <div class="list__table" *ngIf="total > 0">
+                <nz-table #rowSelectionTable nzBordered [nzData]="lstData" [nzFrontPagination]="false" [nzScroll]="{ x: SCROLL_TABLE.SCROLL_X}" [nzNoResult]="">
+                    <thead>
+                        <tr class="ant-header-customize">
+                            <th nzWidth="30px" class="text-center">
+                                {{ 'list.table.stt' | i18n }}
+                            </th>
+                            <th nzWidth="200px">
+                                {{ 'catalog-management.service.table.code' | i18n }}
+                            </th>
+                            <th nzWidth="200px">
+                                {{ 'catalog-management.service.table.name' | i18n }}
+                            </th>
+                            <th nzWidth="200px">
+                                {{ 'catalog-management.service.table.description' | i18n }}
+                            </th>
+                            <th nzWidth="200px">
+                                {{ 'catalog-management.service.table.note' | i18n }}
+                            </th>
+                            <th nzWidth="100px">
+                                {{ 'common.list.table.hanh-dong' | i18n }}
+                            </th>
 
-          </tr>
-          </thead>
-          <tbody>
-          <tr *ngFor="let data of lstData; let idex = index">
-            <td class="text-center" class="max-width-50 text-center">{{(request.size * request.page) +idex + 1}}</td>
-            <td [nz-tooltip]="data.code" class="max-width-150">{{data.code}}</td>
-            <td [nz-tooltip]="data.name" class="max-width-250">{{data.name}}</td>
-            <td [nz-tooltip]="data.serviceModelName?.replaceAll(',', ', ')" class="max-width-250">{{data.serviceModelName?.replaceAll(",", ", ")}}</td>
-            <td [nz-tooltip]="data.note" class="max-width-250">{{data.note}}</td>
-            <td class="max-width-150 text-center">
-              <app-button-icon class="action__margin"
-              [isEdit]="true" [tooltipTitle]="'common.edit'" (click)="showEdit(data.id)"></app-button-icon>
-              <app-button-icon [isDelete]="true" [tooltipTitle]="'catalog-management.service.delete.tooltip'" (click)="showDeleteConfirm(data)"></app-button-icon>
-            </td>
-          </tr>
-          </tbody>
-        </nz-table>
-        <div nz-row class="list__pagination justify-content-start" *ngIf="total > 0">
-          <div nz-col [nzSpan]="12">
-            <app-paging
-              [itemOfPage]="request.size"
-              [currentPage]="request.page"
-              [totalItems]="total"
-              (changeCurrentPage)="changeCurrentPage($event)"
-              (changeItemPerPage)="changeItemPerPage($event)"
-            ></app-paging>
-          </div>
-        </div>
-      </div>
-      <app-no-result *ngIf="total === 0">
-      </app-no-result>
-    </nz-card>
-  </div>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let data of lstData; let idex = index">
+                            <td class="text-center" class="max-width-50 text-center">{{(request.size * request.page) +idex + 1}}</td>
+                            <td [nz-tooltip]="data.code" class="max-width-150">{{data.code}}</td>
+                            <td [nz-tooltip]="data.name" class="max-width-250">{{data.name}}</td>
+                            <td [nz-tooltip]="data.serviceModelName?.replace(',', ', ')" class="max-width-250">{{data.serviceModelName?.replace(",", ", ")}}</td>
+                            <td [nz-tooltip]="data.note" class="max-width-250">{{data.note}}</td>
+                            <td class="max-width-150 text-center">
+                                <app-button-icon class="action__margin" [isEdit]="true" [tooltipTitle]="'common.edit'" (click)="showEdit(data.id)"></app-button-icon>
+                                <app-button-icon [isDelete]="true" [tooltipTitle]="'catalog-management.service.delete.tooltip'" (click)="showDeleteConfirm(data)"></app-button-icon>
+                            </td>
+                        </tr>
+                    </tbody>
+                </nz-table>
+                <div nz-row class="list__pagination justify-content-start" *ngIf="total > 0">
+                    <div nz-col [nzSpan]="12">
+                        <app-paging [itemOfPage]="request.size" [currentPage]="request.page" [totalItems]="total" (changeCurrentPage)="changeCurrentPage($event)" (changeItemPerPage)="changeItemPerPage($event)"></app-paging>
+                    </div>
+                </div>
+            </div>
+            <app-no-result *ngIf="total === 0">
+            </app-no-result>
+        </nz-card>
+    </div>
 </page-header-wrapper>
-<app-modal-confirm
-  title="{{ 'common.delete.title' | i18n :{function: translateService.instant('catalog-management.service.title.function')} }}"
-  [isVisible]="isVisibleModalDelete"
-  content="{{'common.delete.content' | i18n : {content: translateService.instant('catalog-management.inventory.table.service') + ' ' + selectedCode} }}"
-  description="{{'common.delete.confirm' | i18n}}"
-  textButtonCancel="{{'layout.btn.cancel2' | i18n}}"
-  [isDelete]="true"
-  (callBack)="delete(modelId)"
-  (clickCancel)="onCancelModalDelete()"
-></app-modal-confirm>
+<app-modal-confirm title="{{ 'common.delete.title' | i18n :{function: translateService.instant('catalog-management.service.title.function')} }}" [isVisible]="isVisibleModalDelete" content="{{'common.delete.content' | i18n : {content: translateService.instant('catalog-management.inventory.table.service') + ' ' + selectedCode} }}"
+    description="{{'common.delete.confirm' | i18n}}" textButtonCancel="{{'layout.btn.cancel2' | i18n}}" [isDelete]="true" (callBack)="delete(modelId)" (clickCancel)="onCancelModalDelete()"></app-modal-confirm>

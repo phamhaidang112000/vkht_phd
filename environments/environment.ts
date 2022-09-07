@@ -23,14 +23,11 @@ export const environment = {
     colorWeak: false,
   },
   BASE_API_URI: {
-    AUTHENTICATION_API: 'http://10.60.158.110:8063/',
-    BASE_SERVICE_API: 'http://localhost:8063/',
-    // BASE_SERVICE_API: 'http://localhost:8088/',
-    CLIENT_ADDRESS:    'http://localhost:4200',
-    // CLIENT_ADDRESS:    'http://192.168.100.3:8080/vhkt',
-
-    // CLIENT_ADDRESS: 'http://192.168.100.122:8889',
-    SSO_ADDRESS:       'https://10.58.71.179:8225/sso',
+    // BASE_SERVICE_API: 'http://10.60.158.110:8013/',
+    // CLIENT_ADDRESS:    'http://10.60.158.110:8112',
+    BASE_SERVICE_API: 'http://localhost:8013/',
+    CLIENT_ADDRESS:    'http://localhost:8112',
+    SSO_ADDRESS:       'https://10.0.4.20:8225/sso',
 
   },
 };

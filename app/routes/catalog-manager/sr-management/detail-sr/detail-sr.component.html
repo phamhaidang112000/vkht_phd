@@ -1,0 +1,69 @@
+<app-loading></app-loading>
+<page-header-wrapper>
+    <app-breadcrumb *ngIf="isBreadcrumb" [listBreadCrumb]="breadcrumbs"></app-breadcrumb>
+    <nz-card class="nz-card__form" [nzBordered]="false">
+        <div nz-row>
+            <div nz-col nzSpan="24">
+                <app-title-header-layout>
+                    <span *ngIf="isEdit">{{'breadcrumb.sr-management.edit' | i18n}} {{code}}</span>
+                    <span *ngIf="!isEdit">{{'breadcrumb.sr-management.add' | i18n}}</span>
+                </app-title-header-layout>
+            </div>
+        </div>
+        <form nz-form [formGroup]="addForm">
+            <div class="alt-row__container">
+                <div class="alt-row__item">
+                    <app-input-text #codeRef required="true" formControlName="code" [isNoSpace]="true" [isSpecialDisable]="true" placeHolder="Mã SR" [maxLength]="500" labelContent="{{ 'catalog-management.sr.code' | i18n }}"></app-input-text>
+                </div>
+                <div class="alt-row__item">
+                    <app-input-text formControlName="name" placeHolder="Tiêu đề" #nameRef required="true" [maxLength]="500" labelContent="{{ 'catalog-management.sr.title' | i18n }}"></app-input-text>
+                </div>
+                <div class="alt-row__item">
+                    <app-input-text formControlName="service" placeHolder="Dịch vụ" required="true" [maxLength]="500" labelContent="{{ 'catalog-management.sr.service' | i18n }}"></app-input-text>
+                </div>
+                <div class="alt-row__item">
+                    <app-input-text formControlName="unit" placeHolder="Đơn vị yêu cầu" required="true" [maxLength]="500" labelContent="{{ 'catalog-management.sr.request.org' | i18n }}"></app-input-text>
+                </div>
+                <div class="alt-row__item">
+                    <app-input-text formControlName="email" placeHolder="Email" required="true" [maxLength]="500" labelContent="{{ 'catalog-management.sr.request.email' | i18n }}"></app-input-text>
+                </div>
+            </div>
+        </form>
+        <div nz-row class="pt-4">
+            <div nz-col nzSpan="24">
+                <app-title-header-layout>
+                    {{'layout.header.title.sr.config' | i18n}}
+                </app-title-header-layout>
+            </div>
+            <div nz-col nzSpan="12" class="max-width-item">
+                <app-upload-file-attachment [listFiles]="listExcelFile" [isUploadFileModal]="true" [isMultiple]="true" [hideLabel]="false" labelContent="File đính kèm" [required]="true" [validMaxSize]="1" [checkbox]="false" (deleteFile)="eventDeleteFileFromModal($event,1)"
+                    (fetchFile)="fetchFile($event,1)" [control]="addForm.get('fileExcel')" [isEdit]="true"></app-upload-file-attachment>
+                <!-- <app-upload-file-attachment [listFiles]="listExcelFile" [isUploadFileModal]="true"
+                    [isMultiple]="false" [hideLabel]="false" labelContent="{{ 'File đính kèm' | i18n}}" [required]="true" [validMaxSize]="1" (deleteFile)="eventDeleteFileFromModal($event,1)" (fetchFile)="fetchFile($event,1)"
+                    [control]="formSave.get('playbookFileDTO')" (onCheckbox)="changeCheckbox($event, 2)" [isEdit]="true"></app-upload-file-attachment> -->
+                <span style="color: #1a0b0c;" *ngIf="listExcelFile.length == 0 && this.isSubmit">{{'common.error.require' | i18n :{key: 'File đính kèm'} }}</span>
+            </div>
+        </div>
+    </nz-card>
+    <div nz-row class="nz-card__form-action pt-4">
+        <div *ngIf="!id" nz-col nzSpan="6" class="p-3">
+            <label class="create-another" nz-checkbox [(ngModel)]="continueAdd">
+        {{'component.base.checkbox.create-another' | i18n}}
+      </label>
+        </div>
+        <div nz-col *ngIf="id" nz-col nzSpan="24" class="form-action__wrapper text-center">
+
+            <app-button-cancel [isIcon]="false" [popConfirm]="false" (clickCancel)="cancelConfirm()"></app-button-cancel>
+
+            <app-button-save [isIcon]="false" text="{{'layout.btn.update' | i18n}}" (clickSave)="submitForm(continueAdd)"></app-button-save>
+        </div>
+        <div nz-col *ngIf="!id" nz-col nzSpan="24" class="form-action__wrapper text-center">
+
+            <app-button-cancel [isIcon]="false" [popConfirm]="false" (clickCancel)="cancelConfirm()"></app-button-cancel>
+
+            <app-button-save [isIcon]="false" text="{{'layout.btn.create' | i18n}}" (clickSave)="submitForm(continueAdd)"></app-button-save>
+        </div>
+        <div *ngIf="!id" nz-col nzSpan="6"></div>
+    </div>
+</page-header-wrapper>
+<app-modal-confirm title="{{'layout.btn.confirm' | i18n}}" [isVisible]="isViewConfirmCancel" content="{{ 'common.cancel.confirm.content' | i18n}}" textButtonCancel="{{'layout.btn.reject' | i18n}}" [isConfirm]="true" (clickConfirm)="cancel()" (clickCancel)="onCancelConfirm()"></app-modal-confirm>

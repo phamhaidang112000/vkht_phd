@@ -30,7 +30,6 @@ export class InputTextComponent implements ControlValueAccessor, OnInit {
   @Output() onChange = new EventEmitter<any>();
   @Input() isNgModel;
   @Input() isUpperCase = false;
-  @Input() maxLengthError = true;
   model: any;
 
 
