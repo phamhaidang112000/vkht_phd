@@ -1,9 +1,9 @@
-import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { FileManagerService } from 'src/app/services/file-manager/file-manager.service';
-import { TranslateService } from '@ngx-translate/core';
-import { CommonService } from '../../../services/common/common.service';
-import { AbstractControl, FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { ToastService } from '@shared';
+import {Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {FileManagerService} from 'src/app/services/file-manager/file-manager.service';
+import {TranslateService} from '@ngx-translate/core';
+import {CommonService} from '../../../services/common/common.service';
+import {AbstractControl, FormBuilder, FormControl, FormGroup} from '@angular/forms';
+import {ToastService} from '@shared';
 
 @Component({
   selector: 'app-upload-file-attachment',
@@ -26,7 +26,7 @@ export class UploadFileAttachmentComponent implements OnInit {
   @Input() type: number = 1; // loài file upload
   @Input() control: AbstractControl;
   @Input() checkbox = false;
-  @Input() default: AbstractControl;
+  @Input() default : AbstractControl;
   @Input() labelCheckbox: string;
   @Input() showError = true;
   @Input() showErrorXls = false;
@@ -34,8 +34,7 @@ export class UploadFileAttachmentComponent implements OnInit {
   @Output() addFile: EventEmitter<any> = new EventEmitter<any>();
   @Output() deleteFile: EventEmitter<any> = new EventEmitter<any>();
   @Output() onCheckbox: EventEmitter<any> = new EventEmitter<any>();
-  @ViewChild('uploader', { static: false }) uploader: ElementRef;
-
+  @ViewChild('uploader', {static: false}) uploader: ElementRef;
 
   error: string;
   dragAreaClass: string;
@@ -78,7 +77,7 @@ export class UploadFileAttachmentComponent implements OnInit {
         lstNewFile.push(e.target.files[0]);
       }
     }
-    this.fileManagerService.uploadMultipleFile(lstNewFile, this.type).subscribe(res => {
+    this.fileManagerService.uploadMultipleFile(lstNewFile,this.type).subscribe(res => {
       this.listFiles = res.data;
       this.listFiles = [...this.listFiles];
       this.fetchFile.emit(this.listFiles);
@@ -110,18 +109,15 @@ export class UploadFileAttachmentComponent implements OnInit {
       return true;
     }
 
-    // ********* EDIT START ***************
     //valid file extensions
-    if (this.accept) {
+    if(this.accept){
       const extensions = this.accept.split(',');
       const ext = '.' + files.name.split('.').pop();
-      if (extensions.indexOf(ext.toLowerCase()) === -1) {
+      if(extensions.indexOf(ext.toLowerCase()) === -1){
         this.toastService.openErrorToast('Chỉ cho phép tải file có định dạng ' + this.accept);
         return false;
       }
     }
-    // ************ EDIT END ***************
-
     if (this.accept) {
       const fileName = files.name;
       const temp = fileName.split('.');
@@ -226,7 +222,7 @@ export class UploadFileAttachmentComponent implements OnInit {
         lstNewFile.push(files[0]);
       }
     }
-    this.fileManagerService.uploadMultipleFile(lstNewFile, this.type).subscribe(res => {
+    this.fileManagerService.uploadMultipleFile(lstNewFile,this.type).subscribe(res => {
       this.listFiles = res.data;
       this.listFiles = [...this.listFiles];
       this.fetchFile.emit(this.listFiles);

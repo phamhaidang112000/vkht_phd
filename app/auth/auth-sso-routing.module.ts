@@ -6,7 +6,7 @@ import { AuthSsoLoginComponent } from './auth-sso-login/auth-sso-login.component
 const routes: Routes = [
   {
     path: '',
-    component: AuthSsoLoginComponent
+    component: AuthSsoIndexComponent
   },
   {
     path: 'login',

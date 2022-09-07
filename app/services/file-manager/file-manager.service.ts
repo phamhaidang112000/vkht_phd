@@ -55,6 +55,15 @@ export class FileManagerService {
       })
   }
 
+  private getFileByPath(path): Observable<any>{
+    return this.http.get(
+      environment.BASE_API_URI.BASE_SERVICE_API +
+      CommonRouter.downloadFileByPath + '?filePath=' + path + '&_allow_anonymous=true', {
+        responseType: 'blob',
+        observe: 'response',
+      })
+  }
+
   async downloadFileById(id, fileName) {
     const dataFile = await this.getFile(id).toPromise();
     if (dataFile && dataFile.body.size > 0) {
@@ -63,4 +72,14 @@ export class FileManagerService {
       // this.toastService.openErrorToast(this.translateService.instant('common.import.error.file-not-found'));
     }
   }
+
+  async downloadFileByPath(path, fileName) {
+    const dataFile = await this.getFileByPath(path).toPromise();
+    if (dataFile && dataFile.body.size > 0) {
+      this.downloadFile(dataFile, fileName);
+    } else {
+      // this.toastService.openErrorToast(this.translateService.instant('common.import.error.file-not-found'));
+    }
+  }
+
 }

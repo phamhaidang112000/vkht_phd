@@ -41,8 +41,7 @@
           <span class="validator-text" *ngIf="!showErrorXls">Chỉ cho phép file có dung lượng tối đa
             {{validMaxSize}}MB</span>
           <span class="validator-text" *ngIf="showErrorXls">Chỉ cho phép file dạng .xlsx và có dung lượng tối đa không
-            quá
-            {{validMaxSize}}MB</span>
+            quá {{validMaxSize}}MB</span>
         </div>
       </div>
     </div>
@@ -77,15 +76,15 @@
         </span>
       </div>
       <div style="width: 15%" *ngIf="isEdit">
-        <span> {{ item.size * 1 | number }} KB </span>
+        <span> {{ item.size / (1 * 1024) | number }} KB </span>
       </div>
       <div style="width: 7%" *ngIf="isEdit">
         <app-button-icon [isClose]="true" (click)="handleDeleteFile(item, idx)" [tooltipTitle]="'Xóa file đính kèm'">
         </app-button-icon>
       </div>
     </div>
-    <div nz-row>
-      <div class="checkbox__message-error" *ngIf="this.required && this.control.hasError('required')">
+    <div nz-row *ngIf="showError">
+      <div class="checkbox__message-error" *ngIf="this.required && this.control && this.control.hasError('required')">
         {{ errorTip | i18n }}
       </div>
     </div>

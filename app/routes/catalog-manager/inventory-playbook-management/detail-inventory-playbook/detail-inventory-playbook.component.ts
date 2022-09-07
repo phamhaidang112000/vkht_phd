@@ -1,16 +1,16 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { TranslateService } from "@ngx-translate/core";
-import { FormBuilder, FormControl, Validators } from "@angular/forms";
-import { APP_PARAMS_TYPE, REGEX, SCROLL_TABLE } from "../../../../utils";
-import { AppParamsService } from "../../../../services/app-params/app-params.service";
-import { BehaviorSubject, Observable } from "rxjs";
-import { debounceTime } from "rxjs/operators";
-import { ServiceManagementService } from "../../../../services/service-management/service-management.service";
-import { InventoryPlaybookService } from "../../../../services/inventory-playbook/inventory-playbook.service";
-import { ToastService } from "@shared";
-import { ActivatedRoute, Router } from "@angular/router";
-import { InputTextComponent } from "../../../components/inputs/input-text/input-text.component";
-import { type } from "os";
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {TranslateService} from "@ngx-translate/core";
+import {FormBuilder, FormControl, Validators} from "@angular/forms";
+import {APP_PARAMS_TYPE, REGEX, SCROLL_TABLE} from "../../../../utils";
+import {AppParamsService} from "../../../../services/app-params/app-params.service";
+import {BehaviorSubject, Observable} from "rxjs";
+import {debounceTime} from "rxjs/operators";
+import {ServiceManagementService} from "../../../../services/service-management/service-management.service";
+import {InventoryPlaybookService} from "../../../../services/inventory-playbook/inventory-playbook.service";
+import {ToastService} from "@shared";
+import {ActivatedRoute, Router} from "@angular/router";
+import {InputTextComponent} from "../../../components/inputs/input-text/input-text.component";
+import {type} from "os";
 
 @Component({
   selector: 'app-detail-inventory-playbook',
@@ -18,9 +18,9 @@ import { type } from "os";
   styleUrls: ['./detail-inventory-playbook.component.less']
 })
 export class DetailInventoryPlaybookComponent implements OnInit, AfterViewInit {
-  @ViewChild('codeRef', { static: false }) codeRef: InputTextComponent;
-  @ViewChild('nameRef', { static: false }) nameRef: InputTextComponent;
-  @ViewChild('location', { static: false }) locationRef: InputTextComponent;
+  @ViewChild('codeRef', {static: false}) codeRef: InputTextComponent;
+  @ViewChild('nameRef', {static: false}) nameRef: InputTextComponent;
+  @ViewChild('location', {static: false}) locationRef: InputTextComponent;
   breadcrumbs: any = [];
   SCROLL_TABLE = SCROLL_TABLE;
   isBreadcrumb;
@@ -35,6 +35,7 @@ export class DetailInventoryPlaybookComponent implements OnInit, AfterViewInit {
   total: any = 0;
   lstDataMapping: any = [];
   lstMappingCurrent: any = [];
+  lstMappingSettingCurrent: any = [];
   searchService$ = new BehaviorSubject('');
   isSubmit: any = false;
   id: any;
@@ -53,25 +54,22 @@ export class DetailInventoryPlaybookComponent implements OnInit, AfterViewInit {
     sort: 'code'
   };
 
-  //************* EDIT START ************************
-  lstMappingSettingCurrent: any = [];
   listFileNameInventory: any = [];
   listFileNamePlaybook: any = [];
   listFileNamePlaybookUninstall: any = [];
   lstDataSetupMapping: any = [];
   isMappingSetupNull = false;
   lstFileName: any[] = [];
-  //************* EDIT END ************************
 
 
   constructor(private translateService: TranslateService,
-    private formBuilder: FormBuilder,
-    private appParamService: AppParamsService,
-    private serviceMgmtService: ServiceManagementService,
-    private inventoryPlaybookService: InventoryPlaybookService,
-    private toastService: ToastService,
-    private router: Router,
-    private activatedRouter: ActivatedRoute) {
+              private formBuilder: FormBuilder,
+              private appParamService: AppParamsService,
+              private serviceMgmtService: ServiceManagementService,
+              private inventoryPlaybookService: InventoryPlaybookService,
+              private toastService: ToastService,
+              private router: Router,
+              private activatedRouter: ActivatedRoute) {
   }
 
   ngOnInit() {
@@ -109,12 +107,10 @@ export class DetailInventoryPlaybookComponent implements OnInit, AfterViewInit {
       service: new FormControl(null),
       serviceModel: new FormControl(null),
       fileInventory: new FormControl(),
-      //************* EDIT START ************************
       filePath: new FormControl(null, Validators.maxLength(500)),
       inventoryFileName: new FormControl(null),
       playbookFileName: new FormControl(null),
       playbookUnsName: new FormControl(null),
-      //************* EDIT END ************************
     });
   }
 
@@ -193,9 +189,9 @@ export class DetailInventoryPlaybookComponent implements OnInit, AfterViewInit {
           it.placeGNOC.control.updateValueAndValidity();
           it.isRequireGnoc = true;
           hasErr = true;
-        } else {
-          if (typeof it.placeGNOC == 'string') {
-            if (!it.placeGNOC.match(REGEX.LIMIT)) {
+        }else{
+          if(typeof it.placeGNOC == 'string'){
+            if(!it.placeGNOC.match(REGEX.LIMIT)){
               hasErr = true;
             }
           }
@@ -203,9 +199,8 @@ export class DetailInventoryPlaybookComponent implements OnInit, AfterViewInit {
       })
     } else {
       this.isMappingNull = true;
-      return;
     }
-    //***************************EDIT START *************************
+
     if (this.lstDataSetupMapping.length > 0) {
       this.lstDataSetupMapping.forEach(it => {
         console.log(it)
@@ -225,9 +220,9 @@ export class DetailInventoryPlaybookComponent implements OnInit, AfterViewInit {
           it.placeGNOC.control.updateValueAndValidity();
           it.isRequireGnocMapping = true;
           hasErr = true;
-        } else {
-          if (typeof it.placeGNOC == 'string') {
-            if (!it.placeGNOC.match(REGEX.LIMIT)) {
+        }else{
+          if(typeof it.placeGNOC == 'string'){
+            if(!it.placeGNOC.match(REGEX.LIMIT)){
               hasErr = true;
             }
           }
@@ -238,24 +233,22 @@ export class DetailInventoryPlaybookComponent implements OnInit, AfterViewInit {
       this.isMappingSetupNull = true;
       return;
     }
-    //***************************EDIT END *************************
 
-
-    if (hasErr || this.listFileInventory.length == 0 || this.listFilePlayBook.length == 0 || this.listFilePlayBookUnis.length == 0) {
-      return;
-    }
+    // if (hasErr || this.listFileInventory.length == 0 || this.listFilePlayBook.length == 0 || this.listFilePlayBookUnis.length == 0) {
+    //   return;
+    // }
 
     if (this.addForm.valid) {
       let mapping = [];
       this.lstDataMapping.forEach(it => {
-        mapping.push({ variableInventory: it.variableInventory.value, placeGNOC: it.placeGNOC.value || it.placeGNOC })
+        mapping.push({variableInventory: it.variableInventory.value, placeGNOC: it.placeGNOC.value || it.placeGNOC})
       });
-      //*********************** EDIT START *********************
+
       let setupMapping = [];
       this.lstDataSetupMapping.forEach(it => {
-        setupMapping.push({ variableSetting: it.variableSetting.value, placeGNOC: it.placeGNOC.value || it.placeGNOC })
+        setupMapping.push({variableSetting: it.variableSetting.value, placeGNOC: it.placeGNOC.value || it.placeGNOC})
       });
-      // ******************** EDIT END ***********************
+
       let fData = this.addForm.getRawValue();
       let data = {
         id: this.id,
@@ -263,24 +256,22 @@ export class DetailInventoryPlaybookComponent implements OnInit, AfterViewInit {
         name: fData.name,
         service: fData.service,
         serviceModel: fData.serviceModel,
-        inventoryFileId: this.listFileInventory[0].id,
-        playbookFileId: this.listFilePlayBook[0].id,
-        playbookUnsFileId: this.listFilePlayBookUnis[0].id,
-        listMappingInventory: mapping,
-        // **************************EDIT START******************
+        // inventoryFileId: this.listFileInventory[0].id,
+        // playbookFileId: this.listFilePlayBook[0].id,
+        // playbookUnsFileId: this.listFilePlayBookUnis[0].id,
         filePath: fData.filePath,
         inventoryFileName: fData.inventoryFileName,
         playbookFileName: fData.playbookFileName,
         playbookUnsName: fData.playbookUnsName,
+        listMappingInventory: mapping,
         listMappingSetting: setupMapping
-        // ************************** EDIT END***********************
       }
       this.inventoryPlaybookService.save(data).subscribe(res => {
         console.log(res);
         if (res) {
           if (!this.id) {
             if (res.data == "-2") {
-              this.addForm.get('code').setErrors({ 'unique': true })
+              this.addForm.get('code').setErrors({'unique': true})
             } else if (res.data == "-3") {
               this.toastService.openErrorToast(this.translateService.instant('catalog-management.inventory.add.error2', {
                 key1: this.selectedService.name,
@@ -292,12 +283,11 @@ export class DetailInventoryPlaybookComponent implements OnInit, AfterViewInit {
                 this.cancel();
               } else {
                 this.addForm.reset();
-                this.listFilePlayBookUnis = [];
-                this.listFilePlayBook = [];
-                this.lstDataMapping = [];
-                // ********** EDIT START ************
+                // this.listFilePlayBookUnis = [];
+                // this.listFilePlayBook = [];
+                // this.listFileInventory = [];
+                // this.lstDataMapping = [];
                 this.isSubmit = false;
-                //*********** EDIT END **************
               }
             }
           } else {
@@ -306,12 +296,12 @@ export class DetailInventoryPlaybookComponent implements OnInit, AfterViewInit {
                 key1: this.selectedService.name,
                 key2: this.selectedModel.name
               }));
-            } else if (res.data != "1") {
+            }else if (res.data != "1") {
               this.toastService.openErrorToast(this.translateService.instant('catalog-management.inventory.delete.error', {
                 code: this.addForm.get('code').value,
                 srCode: res.data
               }), null);
-            } else {
+            }  else {
               this.toastService.openSuccessToast(this.translateService.instant('catalog-management.inventory.update.success'));
               this.cancel();
             }
@@ -328,6 +318,9 @@ export class DetailInventoryPlaybookComponent implements OnInit, AfterViewInit {
       let ids = event.serviceModel.split(',');
       this.selectServiceModal = this.serviceModels.filter(x => ids.indexOf('' + x.value) > -1);
       this.addForm.get('serviceModel').patchValue(null);
+      console.log(ids)
+      console.log(this.serviceModels)
+      console.log(this.selectServiceModal)
     } else {
       this.addForm.get('serviceModel').patchValue(null);
     }
@@ -365,24 +358,19 @@ export class DetailInventoryPlaybookComponent implements OnInit, AfterViewInit {
 
   onCreateMapping(type) {
     this.lstMappingCurrent = [];
-    this.lstDataMapping.push({ variableInventory: "", placeGNOC: "" });
-    this.lstDataMapping = [...this.lstDataMapping];
+    this.lstMappingSettingCurrent = [];
+    if(type === 'INVENTORY') {
+      this.lstDataMapping.push({variableInventory: "", placeGNOC: ""});
+      this.lstDataMapping = [...this.lstDataMapping];
+    }else if(type === 'INVENTORY_SETUP'){
+      this.lstDataSetupMapping.push({variableSetting: "", placeGNOC: ""});
+      this.lstDataSetupMapping = [...this.lstDataSetupMapping];
+    }
     // this.total = this.lstDataMapping.length;
     // for (let i = this.request.page === 0 ? 0 : this.request.page; i < this.lstDataMapping.length; i++) {
     //   if (i - (this.request.page === 0 ? 0 : this.request.page * this.request.size) > this.request.size - 1) break;
     //   this.lstMappingCurrent.push(this.lstDataMapping[i]);
     // }
-
-    // ************* EDIT START ******************
-    this.lstMappingSettingCurrent = [];
-    if (type === 'INVENTORY') {
-      this.lstDataMapping.push({ variableInventory: "", placeGNOC: "" });
-      this.lstDataMapping = [...this.lstDataMapping];
-    } else if (type === 'INVENTORY_SETUP') {
-      this.lstDataSetupMapping.push({ variableSetting: "", placeGNOC: "" });
-      this.lstDataSetupMapping = [...this.lstDataSetupMapping];
-    }
-    // ************ EDIT END ***********************
   }
 
 
@@ -400,8 +388,13 @@ export class DetailInventoryPlaybookComponent implements OnInit, AfterViewInit {
   }
 
   onDeleteMapping(index, type) {
-    this.lstDataMapping.splice(index, 1);
-    this.lstDataMapping = [...this.lstDataMapping];
+    if(type === 'INVENTORY') {
+      this.lstDataMapping.splice(index, 1);
+      this.lstDataMapping = [...this.lstDataMapping];
+    }else if('INVENTORY_SETUP'){
+      this.lstDataSetupMapping.splice(index, 1);
+      this.lstDataSetupMapping = [...this.lstDataSetupMapping];
+    }
     // this.lstMappingCurrent.splice(index, 1);
     // this.lstDataMapping.splice((this.request.page === 0 ? 0 : this.request.page * this.request.size) + index, 1);
     // console.log(this.lstMappingCurrent);
@@ -411,54 +404,37 @@ export class DetailInventoryPlaybookComponent implements OnInit, AfterViewInit {
     // }
     // this.total = this.lstDataMapping.length;
     // this.lstDataMapping = [...this.lstDataMapping]
-
-    // ************ EDIT START ****************
-    if (type === 'INVENTORY') {
-      this.lstDataMapping.splice(index, 1);
-      this.lstDataMapping = [...this.lstDataMapping];
-    } else if ('INVENTORY_SETUP') {
-      this.lstDataSetupMapping.splice(index, 1);
-      this.lstDataSetupMapping = [...this.lstDataSetupMapping];
-    }
-    // *********** EDIT END *******************
   }
 
   loadData(id) {
     this.lstMappingCurrent = [];
-    //*********** EDIT START ***********/
     this.lstMappingSettingCurrent = [];
-    //********** EDIT END ************ */
     this.inventoryPlaybookService.detail(id).subscribe(res => {
       this.data = res.data;
       this.code = res.data.code;
       console.log(this.data);
       this.addForm.patchValue(res.data);
       this.lstDataMapping = res.data.listMappingInventory;
-      // *********** EDIT START ***************
       this.lstDataSetupMapping = res.data.listMappingSetting;
-      // *********** EDIT END *****************
-      this.listFileInventory = res.data.inventoryFileDTO ? [res.data.inventoryFileDTO] : [];
-      this.listFilePlayBook = res.data.playbookFileDTO ? [res.data.playbookFileDTO] : [];
-      this.listFilePlayBookUnis = res.data.playbookUnsDTO ? [res.data.playbookUnsDTO] : [];
+      // this.listFileInventory = res.data.inventoryFileDTO ? [res.data.inventoryFileDTO] : [];
+      // this.listFilePlayBook = res.data.playbookFileDTO ? [res.data.playbookFileDTO] : [];
+      // this.listFilePlayBookUnis = res.data.playbookUnsDTO ? [res.data.playbookUnsDTO] : [];
       if (this.lstDataMapping) {
-        this.lstMappingCurrent = [...this.lstDataMapping];
+        this.lstMappingCurrent=[...this.lstDataMapping];
       }
 
-
-      // *********** EDIT START ***************
       if (this.lstDataSetupMapping) {
-        this.lstMappingSettingCurrent = [...this.lstDataSetupMapping];
+        this.lstMappingSettingCurrent=[...this.lstDataSetupMapping];
       }
-      if (res.data.filePath) {
+      if(res.data.filePath){
         this.inventoryPlaybookService.getListFolderSetting(res.data.filePath).subscribe(resFilePath => {
-          if (resFilePath) {
+          if(resFilePath){
             this.listFileNameInventory = resFilePath.data;
             this.listFileNamePlaybook = resFilePath.data;
             this.listFileNamePlaybookUninstall = resFilePath.data;
           }
         });
       }
-      // ********** EDIT END *****************
 
       // let service = this.services.filter(it => it.id == res.data.service);
       // this.selectChangeService(service);
@@ -470,10 +446,8 @@ export class DetailInventoryPlaybookComponent implements OnInit, AfterViewInit {
     if (this.getValueField('name') != this.data.name || this.getValueField('service') != this.data.service
       || this.getValueField('serviceModel') != this.data.serviceModel
       // || this.getValueField('serviceModelLocation') != this.data.serviceModelLocation
-      || this.lstDataMapping.length != (this.data.listMappingInventory ? this.data.listMappingInventory.length : 0)
-      //******** EDIT START *********** */
+      || this.lstDataMapping.length != (this.data.listMappingInventory ?  this.data.listMappingInventory.length : 0)
       || this.listFileInventory.length == 0 || this.listFilePlayBook.length == 0 || this.listFilePlayBookUnis.length == 0
-      //******** EDIT END ************** */
       || this.listFileInventory[0].fileName != (this.data.inventoryFileDTO ? this.data.inventoryFileDTO.fileName : null)
       || this.listFilePlayBook[0].fileName != (this.data.playbookFileDTO ? this.data.playbookFileDTO.fileName : null)
       || this.listFilePlayBookUnis[0].fileName != (this.data.playbookUnsDTO ? this.data.playbookUnsDTO.fileName : null)) {
@@ -482,21 +456,21 @@ export class DetailInventoryPlaybookComponent implements OnInit, AfterViewInit {
     return false;
   }
 
-  onblurChange(event: any, place: any, type: any) {
-    if (type === 2 && place.control.value) {
+  onblurChange(event: any, place: any, type: any,typeMapping: any) {
+    if(type === 2 && place.control.value ){
       place.control.patchValue(place.control.value.toUpperCase());
     }
 
-    if (!event.target.value.match(REGEX.VALIDATE_CODE_NOT_SPACE)) {
-      place.control.setErrors({ 'pattern': true });
+    if (!event.target.value.match(REGEX.VALIDATE_CODE_NOT_SPACE) ) {
+      place.control.setErrors({'pattern': true});
       return;
     }
     if (!event.target.value) {
-      place.control.setErrors({ 'required': true });
+      place.control.setErrors({'required': true});
       return;
     }
-    if (!event.target.value.match(REGEX.LIMIT) && type !== 1) {
-      place.control.setErrors({ 'excelPattern': true });
+    if (!event.target.value.match(REGEX.LIMIT) && type !== 1  ) {
+      place.control.setErrors({'excelPattern': true});
       return;
     }
   }
@@ -537,17 +511,16 @@ export class DetailInventoryPlaybookComponent implements OnInit, AfterViewInit {
     return this.addForm.get(item).value;
   }
 
-  //******** EDIT START ******************* */
-  blurFolderImport() {
+  blurFolderImport(){
     const path = this.addForm.get('filePath').value;
-    if (path) {
+    if(path){
       this.inventoryPlaybookService.getListFolderSetting(path).subscribe(res => {
-        if (res.data && res.data.length > 0) {
+        if(res.data && res.data.length > 0){
           this.listFileNameInventory = res.data;
           this.listFileNamePlaybook = res.data;
           this.listFileNamePlaybookUninstall = res.data;
         } else {
-          this.addForm.get('filePath').setErrors({ 'empty': true });
+          this.addForm.get('filePath').setErrors({'empty': true});
           this.listFileNameInventory = [];
           this.listFileNamePlaybook = [];
           this.listFileNamePlaybookUninstall = [];
@@ -560,5 +533,5 @@ export class DetailInventoryPlaybookComponent implements OnInit, AfterViewInit {
       });
     }
   }
-  //******* EDIT END ***************** */
+
 }

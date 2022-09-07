@@ -1,59 +1,91 @@
 <div class="modal">
-    <nz-modal [(nzVisible)]="isVisible" [nzTitle]="modalTitle" nzFooter="nzModalFooter" [nzWidth]="800"
-        (nzOnCancel)="handleCancelModal()" (nzAfterOpen)="openModal()">
-        <div class="modal__body">
-            <div class="modal__contents">
-                <form nz-form [formGroup]="searchForm">
-                    <div nz-row class="pt-2">
+  <nz-modal
+    [(nzVisible)]="isVisible"
+    [nzTitle]="modalTitle"
+    nzFooter="nzModalFooter"
+    [nzWidth]="800"
+    (nzOnCancel)="handleCancelModal()"
+    (nzAfterOpen)="openModal()"
+  >
+    <div class="modal__body">
+      <div class="modal__contents">
+        <form nz-form [formGroup]="searchForm">
+          <div nz-row class="pt-2">
 
-                        <div nz-col [nzSpan]="12" class="p-1">
-                            <div>
-                                <app-select [data]="services" [placeHolder]="'--Lựa chọn--'" [openSearchModal]="false"
-                                    [getObjectValue]="true" [labelHorizontal]="false" required="true"
-                                    (selectChange)="selectChangeService($event)" formControlName="serviceId"
-                                    labelContent="{{'catalog-management.inventory.label.service' | i18n}}"></app-select>
-                            </div>
-                        </div>
-
-                        <div nz-col [nzSpan]="12" class="p-1">
-                            <div>
-                                <app-select [data]="selectServiceModel" [placeHolder]="'--Lựa chọn--'"
-                                    [openSearchModal]="false" [getObjectValue]="true" [labelHorizontal]="false"
-                                    required="true" formControlName="serviceModel"
-                                    labelContent="{{'catalog-management.inventory.label.service-model' | i18n}}">
-                                </app-select>
-                            </div>
-                        </div>
-
-                        <div nz-col nzSpan="24" class="max-width-item">
-                            <app-upload-file-attachment [listFiles]="listFiles" [isUploadFileModal]="true"
-                                [isMultiple]="false" [hideLabel]="false" labelContent="File yêu cầu cài đặt"
-                                [required]="true" [validMaxSize]="1" [checkbox]="false" [showErrorXls]="true"
-                                (deleteFile)="eventDeleteFileFromModal($event)" (fetchFile)="fetchFile($event)"
-                                [isEdit]="true" [control]="searchForm.get('fileImport')" [errorTip]=""
-                                [accept]="'.xlsx'">
-                            </app-upload-file-attachment>
-                            <span style="color: #f5222d;"
-                                *ngIf="listFiles.length == 0 && this.searchForm.get('fileImport').hasError('required') && isSubmit">{{'File
-                                yêu cầu cài đặt không được để trống' }}</span>
-                        </div>
-                    </div>
-                </form>
+            <div nz-col [nzSpan]="12" class="p-1">
+              <div>
+                <app-select
+                  [data]="services"
+                  [placeHolder]="'--Lựa chọn--'"
+                  [openSearchModal]="false"
+                  [getObjectValue]="true"
+                  [labelHorizontal]="false"
+                  required="true"
+                  (selectChange)="selectChangeService($event)"
+                  formControlName="serviceId"
+                  labelContent="{{'catalog-management.inventory.label.service' | i18n}}"
+                ></app-select>
+              </div>
             </div>
-        </div>
-        <div *nzModalFooter class="d-flex justify-content-center">
-            <ng-container>
-                <app-button-cancel [isIcon]="true" [text]="'Hủy'" [popConfirm]="false"
-                    (clickCancel)="handleCancelModal()"></app-button-cancel>
-            </ng-container>
-            <ng-container>
-                <app-button-confirm (clickConfirm)="handleConfirm()" [text]="'Thêm mới'"></app-button-confirm>
-            </ng-container>
-        </div>
-        <ng-template #modalTitle>
-            <div class="text-left">
-                <label>{{title}}</label>
+
+            <div nz-col [nzSpan]="12" class="p-1">
+              <div>
+                <app-select
+                  [data]="selectServiceModel"
+                  [placeHolder]="'--Lựa chọn--'"
+                  [openSearchModal]="false"
+                  [getObjectValue]="true"
+                  [labelHorizontal]="false"
+                  required="true"
+                  formControlName="serviceModel"
+                  labelContent="{{'catalog-management.inventory.label.service-model' | i18n}}"
+                ></app-select>
+              </div>
             </div>
-        </ng-template>
-    </nz-modal>
+
+            <div nz-col nzSpan="24" class="max-width-item">
+              <app-upload-file-attachment
+                [listFiles]="listFiles"
+                [isUploadFileModal]="true"
+                [isMultiple]="false"
+                [hideLabel]="false"
+                labelContent="File yêu cầu cài đặt"
+                [required]="true"
+                [validMaxSize]="1"
+                [checkbox]="false"
+                (deleteFile)="eventDeleteFileFromModal($event)"
+                (fetchFile)="fetchFile($event)"
+                [isEdit]="true"
+                [control]="searchForm.get('fileImport')"
+                [errorTip]=""
+                [showError]="false"
+                [showErrorXls]="true"
+                [accept]="'.xlsx'"
+              ></app-upload-file-attachment>
+              <span style="color: #f5222d;"
+                    *ngIf="listFiles.length == 0 && this.searchForm.get('fileImport').hasError('required') && isSubmit">{{'File yêu cầu cài đặt không được để trống' }}</span>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div *nzModalFooter class="d-flex justify-content-center">
+      <ng-container>
+        <app-button-cancel
+          [isIcon]="true"
+          [text]="'Hủy'"
+          [popConfirm]="false"
+          (clickCancel)="handleCancelModal()"
+        ></app-button-cancel>
+      </ng-container>
+      <ng-container>
+        <app-button-confirm (clickConfirm)="handleConfirm()" [text]="'Thêm mới'"></app-button-confirm>
+      </ng-container>
+    </div>
+    <ng-template #modalTitle>
+      <div class="text-left">
+        <label>{{title}}</label>
+      </div>
+    </ng-template>
+  </nz-modal>
 </div>

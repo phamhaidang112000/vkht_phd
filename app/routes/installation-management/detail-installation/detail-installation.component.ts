@@ -7,17 +7,17 @@ import {
   OnInit,
   ViewChild
 } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { TranslateService } from "@ngx-translate/core";
-import { InstallationManagementService } from "../../../services/installation-management/installation-management.service";
-import { ActivatedRoute, Router } from "@angular/router";
-import { InputTextComponent } from "../../components/inputs/input-text/input-text.component";
-import { NgxSpinnerService } from "ngx-spinner";
-import { AppParamsService } from "../../../services/app-params/app-params.service";
-import { APP_PARAMS_TYPE, SCROLL_TABLE } from "../../../utils";
-import { ServiceManagementService } from "../../../services/service-management/service-management.service";
-import { FileManagerService } from "../../../services/file-manager/file-manager.service";
-import { ToastService } from "@shared";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {TranslateService} from "@ngx-translate/core";
+import {InstallationManagementService} from "../../../services/installation-management/installation-management.service";
+import {ActivatedRoute, Router} from "@angular/router";
+import {InputTextComponent} from "../../components/inputs/input-text/input-text.component";
+import {NgxSpinnerService} from "ngx-spinner";
+import {AppParamsService} from "../../../services/app-params/app-params.service";
+import {APP_PARAMS_TYPE, SCROLL_TABLE} from "../../../utils";
+import {ServiceManagementService} from "../../../services/service-management/service-management.service";
+import {FileManagerService} from "../../../services/file-manager/file-manager.service";
+import {ToastService} from "@shared";
 
 @Component({
   selector: 'app-detail-installation',
@@ -25,7 +25,7 @@ import { ToastService } from "@shared";
   styleUrls: ['./detail-installation.component.less']
 })
 export class DetailInstallationComponent implements OnInit, AfterViewInit, AfterViewChecked {
-  @ViewChild('codeRef', { static: false }) codeRef: InputTextComponent;
+  @ViewChild('codeRef', {static: false}) codeRef: InputTextComponent;
   isBreadcrumb: any;
   breadcrumbs: any[] = [];
   formSave: FormGroup;
@@ -44,9 +44,8 @@ export class DetailInstallationComponent implements OnInit, AfterViewInit, After
   inventoryDefault = false;
   playbookDefault = false;
   isViewConfirmCancel: any;
-  lstOption = [{ name: "Chạy Uninstall Playbook và cài đặt Playbook", value: 2 }, {
-    name: 'Chạy cài đặt Playbook',
-    value: 1
+  lstOption = [{name: this.translateService.instant('catalog-management.resource-setting.run.uninstall.playbook.and.query.setting'), value: 2}, {
+    name: this.translateService.instant('catalog-management.resource-setting.run.query.setting'), value: 1
   }];
   isSubmit = false;
   inventoryFileDTOEmpty = false;
@@ -62,12 +61,9 @@ export class DetailInstallationComponent implements OnInit, AfterViewInit, After
     size: 10,
     sort: 'code'
   };
-
-  // ******** EDIT START *************
-  hideQuerySetting: any = true;
+  hideQuerySetting:any = true;
   newQuerySetting: any;
-  isCommand: any;
-  // ******** EDIT END ***************
+  isCommand : any;
 
   constructor(
     private translateService: TranslateService,
@@ -127,10 +123,8 @@ export class DetailInstallationComponent implements OnInit, AfterViewInit, After
       inventoryFileDTO: [null],
       playbookFileDTO: [null],
       listFilePlaybook: [null],
-      // ********** EDIT START **************
       querySetting: [null, Validators.maxLength(1000)],
-      isCommand: [null]
-      // ********* EDIT END *****************
+      isCommand:[null]
     })
   }
 
@@ -159,12 +153,9 @@ export class DetailInstallationComponent implements OnInit, AfterViewInit, After
         this.listHistorySetting.push(this.listAllHistory[i]);
       }
     }
-    // this.listHistorySetting = this.listAllHistory.fill();
-
-    // ************* EDIT START *****************
-    if (data.isCommand === 1) {
+    if(data.isCommand === 1){
       this.hideQuerySetting = false;
-    } else {
+    }else{
       this.hideQuerySetting = true;
     }
     this.setFieldValue('isCommand', this.formSave.get('isCommand').value === 1 ? true : false);
@@ -172,7 +163,6 @@ export class DetailInstallationComponent implements OnInit, AfterViewInit, After
     this.isCommand = data.isCommand;
     this.total = this.listAllHistory.length;
     this.codeRef.focus();
-    // ************ EDIT END ***********************
   }
 
   getConnectName(value) {
@@ -234,30 +224,27 @@ export class DetailInstallationComponent implements OnInit, AfterViewInit, After
       //   this.isSubmit=false;
       //   return;
       // }
-      this.formSave.value.isFileInventory === false || this.formSave.value.isFileInventory === 0 ? this.formSave.value.isFileInventory = 0 : this.formSave.value.isFileInventory = 1;
-      this.formSave.value.isFilePlaybook === false || this.formSave.value.isFilePlaybook === 0 ? this.formSave.value.isFilePlaybook = 0 : this.formSave.value.isFilePlaybook = 1;
+      this.formSave.value.isFileInventory === false || this.formSave.value.isFileInventory === 0  ? this.formSave.value.isFileInventory = 0 : this.formSave.value.isFileInventory = 1;
+      this.formSave.value.isFilePlaybook === false  || this.formSave.value.isFilePlaybook === 0 ? this.formSave.value.isFilePlaybook = 0 : this.formSave.value.isFilePlaybook = 1;
 
-      if (this.formSave.value.isFileInventory === 0 && this.listFileInventory.length === 0) {
-        this.isSubmit = false;
+      if(this.formSave.value.isFileInventory === 0 &&  this.listFileInventory.length === 0 ){
+        this.isSubmit=false;
         return;
       }
-      if (this.formSave.value.isFilePlaybook === 0 && this.listFilePlaybook.length === 0) {
-        this.isSubmit = false;
+      if(this.formSave.value.isFilePlaybook === 0 &&  this.listFilePlaybook.length === 0 ){
+        this.isSubmit=false;
         return;
       }
-
-      // ************** EDIT START **********************
       this.setFieldValue('isCommand', this.formSave.get('isCommand').value === true ? 1 : 0)
       this.setFieldValue('isFileInventory', this.formSave.get('isFileInventory').value === true ? 1 : 0)
-      // ************** EDIT END ************************
-
+      // this.setFieldValue('querySetting', this.formSave.get('querySetting').value)
       this.spinner.show()
       this.installationManagementService.update(this.formSave.value).subscribe(res => {
         if (res) {
           this.router.navigate(['/installation/list']);
           this.spinner.hide();
         }
-      }, error => {
+      },error => {
         this.spinner.hide();
       })
     }
@@ -266,10 +253,10 @@ export class DetailInstallationComponent implements OnInit, AfterViewInit, After
   eventDeleteFileFromModal(event: any, idx: number) {
     console.log(event);
     if (idx === 1) {
-      this.listFileInventory = []
+      this.listFileInventory = [];
     }
     if (idx === 2) {
-      this.listFilePlaybook = []
+      this.listFilePlaybook = [];
     }
   }
 
@@ -287,13 +274,13 @@ export class DetailInstallationComponent implements OnInit, AfterViewInit, After
 
   validFormSave(): boolean {
     let valid = false;
-    if ((this.getFieldValue('isFileInventory') === false || this.getFieldValue('isFileInventory') === 0)
-      && typeof (this.getFieldValue('inventoryFileDTO')) === 'object' && this.listFileInventory.length === 0) {
+    if ((this.getFieldValue('isFileInventory') === false || this.getFieldValue('isFileInventory') === 0 )
+        && typeof(this.getFieldValue('inventoryFileDTO')) === 'object' && this.listFileInventory.length === 0) {
       this.inventoryFileDTOEmpty = true;
       valid = true;
     }
-    if ((this.getFieldValue('isFilePlaybook') === false || this.getFieldValue('isFilePlaybook') === 0)
-      && typeof (this.getFieldValue('playbookFileDTO')) === 'object' && this.listFilePlaybook.length === 0) {
+    if ((this.getFieldValue('isFilePlaybook') === false || this.getFieldValue('isFilePlaybook') === 0 )
+        && typeof(this.getFieldValue('playbookFileDTO')) === 'object' && this.listFilePlaybook.length === 0) {
       this.playbookFileDTOEmpty = true;
       valid = true;
     }
@@ -301,36 +288,28 @@ export class DetailInstallationComponent implements OnInit, AfterViewInit, After
       this.optionSettingEmpty = true;
       valid = true;
     }
-
-    // ************ EDIT START *********************
-    if (this.hideQuerySetting && !this.getFieldValue('querySetting')) {
+    if(this.hideQuerySetting && !this.getFieldValue('querySetting')){
       valid = true;
       this.formSave.get('querySetting').setValidators([Validators.required, Validators.maxLength(1000)]);
       this.formSave.get('querySetting').markAsTouched();
       this.formSave.get('querySetting').markAsDirty();
       this.formSave.get('querySetting').updateValueAndValidity();
     }
-    // ************ EDIT END ************************
-
     return valid;
   }
 
   changeCheckbox(event: any, index: any) {
-    if (index === 1) {
-      if (event === true) {
+    if (index === 1){
+      if(event === true){
         this.inventoryFileDTOEmpty = false;
-        // ********** EDIT START **********
-        this.listFilePlaybook = [];
-        // ************ EDIT END ************************
+        this.listFileInventory  = [];
       }
       this.setFieldValue('isFileInventory', event);
     }
-    else if (index === 2) {
-      if (event === true) {
+    else if (index === 2){
+      if(event === true){
         this.playbookFileDTOEmpty = false;
-        // ********** EDIT START **********
-        this.listFilePlaybook = [];
-        // ************ EDIT END ************************
+        this.listFilePlaybook  = [];
       }
       this.setFieldValue('isFilePlaybook', event);
     }
@@ -384,11 +363,13 @@ export class DetailInstallationComponent implements OnInit, AfterViewInit, After
     return false;
   }
 
-
-  // ******** EDIT START ***************
-  onChangeCheckbox(event) {
+  onChangeCheckbox(event){
     console.log(event)
     this.hideQuerySetting = event;
+    // if(!this.hideQuerySetting){
+    //   this.formSave.get('querySetting').clearValidators();
+    //   this.formSave.get('querySetting').updateValueAndValidity();
+    //   this.formSave.get('querySetting').patchValue(null);
+    // }
   }
-  // ********* EDIT END ***************
 }

@@ -1,5 +1,5 @@
 import {ControlValueAccessor, NgControl} from '@angular/forms';
-import {Component, EventEmitter, Input, OnInit, Optional, Output, Self} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnInit, Optional, Output, Self, ViewChild} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 
 @Component({
@@ -8,6 +8,7 @@ import {TranslateService} from '@ngx-translate/core';
   styleUrls: ['./input-textarea.component.scss'],
 })
 export class InputTextareaComponent implements ControlValueAccessor, OnInit {
+  @ViewChild('inputTextareaRef', {static: false}) inputRef: ElementRef<HTMLInputElement>;
   @Input() labelContent: string;
   @Input() placeHolder: string;
   @Input() isPlaceHolder = false;
@@ -59,10 +60,16 @@ export class InputTextareaComponent implements ControlValueAccessor, OnInit {
   onBlur(event: any) {
     this.isFocused = false;
     this.eventBlur.emit(event);
-    this.ngControl.control.setValue(this.ngControl.control.value.trim());
+    if(this.ngControl.control.value) {
+      this.ngControl.control.setValue(this.ngControl.control.value.trim());
+    }
   }
 
   onClear() {
     this.ngControl.control.setValue(null);
+  }
+
+  focus() {
+    this.inputRef.nativeElement.focus();
   }
 }
