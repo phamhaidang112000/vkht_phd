@@ -19,7 +19,7 @@ export const environment = {
     onlyIcon: false,
     colorWeak: false,
   },
-   BASE_API_URI: {
+  BASE_API_URI: {
     // BASE_SERVICE_API: 'http://10.60.158.105:8063/',
     BASE_SERVICE_API: 'http://10.60.158.110:8063/',
     CLIENT_ADDRESS:    'http://10.60.158.110:8181/vhkt',

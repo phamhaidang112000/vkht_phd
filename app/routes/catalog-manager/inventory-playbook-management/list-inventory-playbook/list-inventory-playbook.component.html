@@ -5,215 +5,170 @@
 <!--  </div>-->
 <!--</div>-->
 <page-header-wrapper>
-  <app-breadcrumb *ngIf="isBreadcrumb" [listBreadCrumb]="breadcrumbs"></app-breadcrumb>
-  <div nz-row>
-    <nz-card nz-row>
-      <nz-collapse [nzBordered]="false">
-        <nz-collapse-panel
-          #searchPanel
-          [nzExpandedIcon]="searchExpandedIcon"
-          [nzActive]="true"
-          [nzHeader]="'common.card.search.title' | i18n"
-        >
-          <ng-template #searchExpandedIcon let-active
-          >{{ active }}
-            <i nz-icon nzType="caret-right" class="ant-collapse-arrow" [nzRotate]="searchPanel.nzActive ? 90 : -90"></i>
-          </ng-template>
-          <form nz-form [formGroup]="searchForm">
-            <div class="alt-row__container">
-              <div class="alt-row__item">
-                <app-input-text
-                  #codeRef
-                  formControlName="code"
-                  placeHolder="Nhập mã"
-                  labelContent="{{ 'catalog-management.inventory.label.code' | i18n }}"
-                ></app-input-text>
-              </div>
+    <app-breadcrumb *ngIf="isBreadcrumb" [listBreadCrumb]="breadcrumbs"></app-breadcrumb>
+    <div nz-row>
+        <nz-card nz-row>
+            <nz-collapse [nzBordered]="false">
+                <nz-collapse-panel #searchPanel [nzExpandedIcon]="searchExpandedIcon" [nzActive]="true"
+                    [nzHeader]="'common.card.search.title' | i18n">
+                    <ng-template #searchExpandedIcon let-active>{{ active }}
+                        <i nz-icon nzType="caret-right" class="ant-collapse-arrow"
+                            [nzRotate]="searchPanel.nzActive ? 90 : -90"></i>
+                    </ng-template>
+                    <form nz-form [formGroup]="searchForm">
+                        <div class="alt-row__container">
+                            <div class="alt-row__item">
+                                <app-input-text #codeRef formControlName="code" placeHolder="Nhập mã"
+                                    labelContent="{{ 'catalog-management.inventory.label.code' | i18n }}">
+                                </app-input-text>
+                            </div>
 
-              <div class="alt-row__item">
-                <app-select
-                  [data]="services"
-                  [placeHolder]="'--Tất cả--'"
-                  [openSearchModal]="false"
-                  [getObjectValue]="true"
-                  [labelHorizontal]="false"
-                  formControlName="service"
-                  (clickClear)="clearService()"
-                  (selectChange)="selectChangeService()"
-                  labelContent="{{'catalog-management.inventory.label.service' | i18n}}"
-                ></app-select>
-              </div>
-              <div class="alt-row__item">
-                <app-input-text
-                  formControlName="name"
-                  placeHolder="Nhập tên"
-                  labelContent="{{ 'catalog-management.inventory.label.name' | i18n }}"
-                ></app-input-text>
-              </div>
-              <div class="alt-row__item">
-                <app-select
-                  [data]="serviceModels"
-                  [placeHolder]="'--Tất cả--'"
-                  [openSearchModal]="false"
-                  [getObjectValue]="true"
-                  [labelHorizontal]="false"
-                  valueField="value"
-                  formControlName="serviceModel"
-                  (clickClear)="clearService()"
-                  (selectChange)="selectChangeService()"
-                  labelContent="{{'catalog-management.inventory.label.service-model' | i18n}}"
-                ></app-select>
-              </div>
+                            <div class="alt-row__item">
+                                <app-select [data]="services" [placeHolder]="'--Tất cả--'" [openSearchModal]="false"
+                                    [getObjectValue]="true" [labelHorizontal]="false" formControlName="service"
+                                    (clickClear)="clearService()" (selectChange)="selectChangeService()"
+                                    labelContent="{{'catalog-management.inventory.label.service' | i18n}}"></app-select>
+                            </div>
+                            <div class="alt-row__item">
+                                <app-input-text formControlName="name" placeHolder="Nhập tên"
+                                    labelContent="{{ 'catalog-management.inventory.label.name' | i18n }}">
+                                </app-input-text>
+                            </div>
+                            <div class="alt-row__item">
+                                <app-select [data]="serviceModels" [placeHolder]="'--Tất cả--'"
+                                    [openSearchModal]="false" [getObjectValue]="true" [labelHorizontal]="false"
+                                    valueField="value" formControlName="serviceModel" (clickClear)="clearService()"
+                                    (selectChange)="selectChangeService()"
+                                    labelContent="{{'catalog-management.inventory.label.service-model' | i18n}}">
+                                </app-select>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-center btn-search__container">
+                            <app-button-base iconType="search" (clickAction)="nzOnSearch($event)"
+                                text="{{ 'layout.btn.search' | i18n }}"></app-button-base>
+                        </div>
+                    </form>
+                </nz-collapse-panel>
+            </nz-collapse>
+        </nz-card>
+    </div>
+    <div nz-row class="mb-0">
+        <nz-card>
+            <div class="list__container">
+                <div class="list__head">
+                    <div class="list__head-left">
+                        <div class="list__head-title">
+                            <span class="head-title">{{ 'catalog-management.inventory.label.resultTitle' | i18n :
+                                {total: ""} }}</span>
+                            <span class="head-count"><span class="head-count__bracket">(</span><span
+                                    class="head-count__number">{{ total }}</span><span
+                                    class="head-count__bracket">)</span></span>
+                        </div>
+                    </div>
+                    <div class="list__head-right">
+                        <div class="list__head-btn">
+                            <app-button-create [buttonType]="'link'" (clickCreate)="onCreate()"></app-button-create>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="d-flex justify-content-center btn-search__container">
-              <app-button-base
-                iconType="search"
-                (clickAction)="nzOnSearch($event)"
-                text="{{ 'layout.btn.search' | i18n }}"
-              ></app-button-base>
+            <div class="list__table" *ngIf="total > 0">
+                <nz-table #rowSelectionTable nzBordered [nzData]="lstData" [nzFrontPagination]="false"
+                    [nzScroll]="{ x: SCROLL_TABLE.SCROLL_X}" [nzNoResult]="">
+                    <thead>
+                        <tr class="ant-header-customize">
+                            <th nzWidth="50px" class="text-center">
+                                {{ 'list.table.stt' | i18n }}
+                            </th>
+                            <th nzWidth="150px">
+                                {{ 'catalog-management.inventory.table.code' | i18n }}
+                            </th>
+                            <th nzWidth="200px">
+                                {{ 'catalog-management.inventory.table.name' | i18n }}
+                            </th>
+                            <th nzWidth="200px">
+                                {{ 'catalog-management.inventory.table.service' | i18n }}
+                            </th>
+                            <th nzWidth="200px">
+                                {{ 'catalog-management.inventory.table.service-model' | i18n }}
+                            </th>
+                            <th nzWidth="200px">
+                                {{ 'catalog-management.inventory.table.inventory' | i18n }}
+                            </th>
+                            <th nzWidth="200px">
+                                {{ 'catalog-management.inventory.table.playbook' | i18n }}
+                            </th>
+                            <th nzWidth="200px">
+                                {{ 'catalog-management.inventory.table.playbook-uninstall' | i18n }}
+                            </th>
+                            <th nzWidth="100px">
+                                {{ 'common.list.table.hanh-dong' | i18n }}
+                            </th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let data of lstData; let idx = index">
+                            <td class="text-center">{{(request.page * request.size) + idx + 1}}</td>
+                            <td [nz-tooltip]="data.code" class="max-width-150">{{data.code}}</td>
+                            <td [nz-tooltip]="data.name" class="max-width-200">{{data.name}}</td>
+                            <td [nz-tooltip]="data.serviceName" class="max-width-200">{{data.serviceName}}</td>
+                            <td [nz-tooltip]="data.serviceModelName" class="max-width-200">{{data.serviceModelName}}
+                            </td>
+                            <td [nz-tooltip]="data.inventoryFileName" class="width-200">
+                                <span
+                                    class="span-download text-ellipsis d-inline-block">{{data.inventoryFileName}}</span>
+                                <app-button-icon class="float-right" *ngIf="data.inventoryFileName"
+                                    (clickAction)="onDownloadFile(data.inventoryFileId, data.inventoryFileName)"
+                                    [buttonSize]="'default'" [isDownloadFile]="true">
+
+                                </app-button-icon>
+                            </td>
+                            <td [nz-tooltip]="data.playbookFileName" class="max-width-200">
+                                <span class="span-download text-ellipsis d-inline-block"> {{data.playbookFileName}}
+                                </span>
+                                <app-button-icon class="float-right" *ngIf="data.playbookFileName"
+                                    (clickAction)="onDownloadFile(data.playbookFileId, data.playbookFileName)"
+                                    [buttonSize]="'default'" [isDownloadFile]="true">
+
+                                </app-button-icon>
+                            </td>
+                            <td [nz-tooltip]="data.playbookUnsName" class="max-width-200">
+                                <span class="span-download text-ellipsis d-inline-block">{{data.playbookUnsName}}</span>
+                                <app-button-icon class="float-right" *ngIf="data.playbookUnsName"
+                                    (clickAction)="onDownloadFile(data.playbookUnsFileId, data.playbookUnsName)"
+                                    [buttonSize]="'default'" [isDownloadFile]="true">
+
+                                </app-button-icon>
+                            </td>
+                            <td class="text-center">
+                                <app-button-icon class="action__margin" [isEdit]="true"
+                                    [tooltipTitle]="'Cập nhật Inventory & Playbook'" (click)="goToEdit(data)">
+                                </app-button-icon>
+                                <app-button-icon [isDelete]="true" [tooltipTitle]="'Xóa Inventory & Playbook'"
+                                    (click)="openModalDelete(data)"></app-button-icon>
+                            </td>
+                        </tr>
+                    </tbody>
+
+                </nz-table>
+                <div nz-row class="list__pagination justify-content-start" *ngIf="total > 0">
+                    <div nz-col [nzSpan]="12">
+                        <app-paging [itemOfPage]="request.size" [currentPage]="request.page" [totalItems]="total"
+                            (changeCurrentPage)="changeCurrentPage($event)"
+                            (changeItemPerPage)="changeItemPerPage($event)"></app-paging>
+                    </div>
+                </div>
             </div>
-          </form>
-        </nz-collapse-panel>
-      </nz-collapse>
-    </nz-card>
-  </div>
-  <div nz-row class="mb-0">
-    <nz-card>
-      <div class="list__container">
-        <div class="list__head">
-          <div class="list__head-left">
-            <div class="list__head-title">
-                  <span
-                    class="head-title">{{ 'catalog-management.inventory.label.resultTitle' | i18n : {total: ""} }}</span>
-              <span class="head-count"
-              ><span class="head-count__bracket">(</span><span class="head-count__number">{{ total }}</span
-              ><span class="head-count__bracket">)</span></span>
-            </div>
-          </div>
-          <div class="list__head-right">
-            <div class="list__head-btn">
-              <app-button-create
-                [buttonType]="'link'"
-                (clickCreate)="onCreate()"
-              ></app-button-create>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="list__table" *ngIf="total > 0">
-        <nz-table
-          #rowSelectionTable
-          nzBordered
-          [nzData]="lstData"
-          [nzFrontPagination]="false"
-          [nzScroll]="{ x: SCROLL_TABLE.SCROLL_X}"
-          [nzNoResult]=""
-        >
-          <thead>
-          <tr class="ant-header-customize">
-            <th nzWidth="50px" class="text-center">
-              {{ 'list.table.stt' | i18n }}
-            </th>
-            <th nzWidth="150px">
-              {{ 'catalog-management.inventory.table.code' | i18n }}
-            </th>
-            <th nzWidth="200px">
-              {{ 'catalog-management.inventory.table.name' | i18n }}
-            </th>
-            <th nzWidth="200px">
-              {{ 'catalog-management.inventory.table.service' | i18n }}
-            </th>
-            <th nzWidth="200px">
-              {{ 'catalog-management.inventory.table.service-model' | i18n }}
-            </th>
-            <th nzWidth="200px">
-              {{ 'catalog-management.inventory.table.inventory' | i18n }}
-            </th>
-            <th nzWidth="200px">
-              {{ 'catalog-management.inventory.table.playbook' | i18n }}
-            </th>
-            <th nzWidth="200px">
-              {{ 'catalog-management.inventory.table.playbook-uninstall' | i18n }}
-            </th>
-            <th nzWidth="100px">
-              {{ 'common.list.table.hanh-dong' | i18n }}
-            </th>
-
-          </tr>
-          </thead>
-          <tbody>
-          <tr *ngFor="let data of lstData; let idx = index">
-            <td class="text-center">{{(request.page * request.size) + idx + 1}}</td>
-            <td [nz-tooltip]="data.code" class="max-width-150">{{data.code}}</td>
-            <td [nz-tooltip]="data.name" class="max-width-200">{{data.name}}</td>
-            <td [nz-tooltip]="data.serviceName" class="max-width-200">{{data.serviceName}}</td>
-            <td [nz-tooltip]="data.serviceModelName" class="max-width-200">{{data.serviceModelName}}</td>
-            <td [nz-tooltip]="data.inventoryFileName" class="width-200">
-              <span class="span-download text-ellipsis d-inline-block">{{data.inventoryFileName}}</span>
-              <app-button-icon class="float-right"
-                               *ngIf="data.inventoryFileName"
-                               (clickAction)="onDownloadFile(data.filePath + '/' + data.inventoryFileName, data.inventoryFileName)"
-                               [buttonSize]="'default'" [isDownloadFile]="true">
-
-              </app-button-icon>
-            </td>
-            <td [nz-tooltip]="data.playbookFileName" class="max-width-200">
-              <span class="span-download text-ellipsis d-inline-block"> {{data.playbookFileName}} </span>
-              <app-button-icon class="float-right" *ngIf="data.playbookFileName"
-                               (clickAction)="onDownloadFile(data.filePath + '/' + data.playbookFileName, data.playbookFileName)"
-                               [buttonSize]="'default'" [isDownloadFile]="true">
-
-              </app-button-icon>
-            </td>
-            <td [nz-tooltip]="data.playbookUnsName" class="max-width-200">
-              <span class="span-download text-ellipsis d-inline-block">{{data.playbookUnsName}}</span>
-              <app-button-icon class="float-right" *ngIf="data.playbookUnsName"
-                               (clickAction)="onDownloadFile(data.filePath + '/' + data.playbookUnsName, data.playbookUnsName)"
-                               [buttonSize]="'default'" [isDownloadFile]="true">
-
-              </app-button-icon>
-            </td>
-            <td class="text-center">
-              <app-button-icon
-                class="action__margin"
-                [isEdit]="true"
-                [tooltipTitle]="'catalog-management.inventory.update'"
-                (click)="goToEdit(data)"
-              ></app-button-icon>
-              <app-button-icon
-                [isDelete]="true"
-                [tooltipTitle]="'catalog-management.inventory.delete'"
-                (click)="openModalDelete(data)"
-              ></app-button-icon>
-            </td>
-          </tr>
-          </tbody>
-
-        </nz-table>
-        <div nz-row class="list__pagination justify-content-start" *ngIf="total > 0">
-          <div nz-col [nzSpan]="12">
-            <app-paging
-              [itemOfPage]="request.size"
-              [currentPage]="request.page"
-              [totalItems]="total"
-              (changeCurrentPage)="changeCurrentPage($event)"
-              (changeItemPerPage)="changeItemPerPage($event)"
-            ></app-paging>
-          </div>
-        </div>
-      </div>
-      <app-no-result *ngIf="total === 0">
-      </app-no-result>
-    </nz-card>
-  </div>
+            <app-no-result *ngIf="total === 0">
+            </app-no-result>
+        </nz-card>
+    </div>
 </page-header-wrapper>
 <app-modal-confirm
-  title="{{ 'common.delete.title' | i18n :{function: translateService.instant('catalog-management.inventory.setting')} }}"
-  [isVisible]="isVisibleModalDelete"
-  content="{{'common.delete.content' | i18n : {content: translateService.instant('catalog-management.inventory.setting') + ' ' + selectedCode} }}"
-  description="{{'common.delete.confirm' | i18n}}"
-  textButtonCancel="{{'layout.btn.cancel2' | i18n}}"
-  [isDelete]="true"
-  (callBack)="callBackModalDelete($event)"
-  (clickCancel)="onCancelModalDelete()"
-></app-modal-confirm>
+    title="{{ 'common.delete.title' | i18n :{function: translateService.instant('catalog-management.inventory.function')} }}"
+    [isVisible]="isVisibleModalDelete"
+    content="{{'common.delete.content' | i18n : {content: translateService.instant('catalog-management.inventory.function') + ' ' + selectedCode} }}"
+    description="{{'common.delete.confirm' | i18n}}" textButtonCancel="{{'layout.btn.cancel2' | i18n}}"
+    [isDelete]="true" (callBack)="callBackModalDelete($event)" (clickCancel)="onCancelModalDelete()">
+</app-modal-confirm>

@@ -1,11 +1,11 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {AbstractControl, FormBuilder, Validators} from "@angular/forms";
-import {APP_PARAMS_TYPE} from "../../../../utils";
-import {AppParamsService} from "../../../../services/app-params/app-params.service";
-import {ServiceManagementService} from "../../../../services/service-management/service-management.service";
-import {BehaviorSubject, Observable} from "rxjs";
-import {debounceTime} from "rxjs/operators";
-import {InstallationManagementService} from "../../../../services/installation-management/installation-management.service";
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
+import { AppParamsService } from 'src/app/services/app-params/app-params.service';
+import { InstallationManagementService } from 'src/app/services/installation-management/installation-management.service';
+import { ServiceManagementService } from 'src/app/services/service-management/service-management.service';
+import { APP_PARAMS_TYPE } from 'src/app/utils';
 
 @Component({
   selector: 'app-modal-import',
@@ -13,7 +13,6 @@ import {InstallationManagementService} from "../../../../services/installation-m
   styleUrls: ['./modal-import.component.less']
 })
 export class ModalImportComponent implements OnInit {
-
   @Input() isVisible: boolean;
   @Input() title: string;
   @Input() description: string;
@@ -101,32 +100,33 @@ export class ModalImportComponent implements OnInit {
       this.searchForm.controls[i].updateValueAndValidity();
     }
     const file = this.searchForm.get('fileImport').value;
-    if(this.searchForm.invalid){
+    if (this.searchForm.invalid) {
       return;
     }
     const data = {
-      userId : localStorage.getItem('employeeCode'),
+      userId: localStorage.getItem('employeeCode'),
       fileId: file[0].id,
       serviceId: this.searchForm.get('serviceId').value,
       serviceModel: this.searchForm.get('serviceModel').value
     }
+    console.log(data);
     this.installationManagementService.importExcel(data).subscribe(res => {
-      if(res){
+      if (res) {
         this.handleCancelModal();
         this.callBack.emit();
       }
     }, error => {
-    }, () =>{
+      console.log(error);
     });
 
   }
 
-  eventDeleteFileFromModal($event){
+  eventDeleteFileFromModal($event) {
     this.listFiles = [];
   }
 
   fetchFile(event: any) {
-      this.listFiles = event;
+    this.listFiles = event;
   }
 
   selectChangeService(event) {

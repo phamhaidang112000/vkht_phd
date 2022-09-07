@@ -1,111 +1,53 @@
 <app-loading></app-loading>
 <page-header-wrapper>
-  <app-breadcrumb *ngIf="isBreadcrumb" [listBreadCrumb]="breadcrumbs"></app-breadcrumb>
-  <nz-card class="nz-card__form" [nzBordered]="false">
-    <div nz-row>
-      <div nz-col nzSpan="24">
-        <app-title-header-layout >
-          <span *ngIf="action === 'INSERT'">{{'breadcrumb.service-management-add' | i18n}}</span>
-          <span *ngIf="action === 'UPDATE'">{{'breadcrumb.service-management-edit' | i18n}} {{formSave.get('code').value}}</span>
-        </app-title-header-layout>
-      </div>
-    </div>
-    <form nz-form [formGroup]="formSave">
-      <div nz-row>
-        <div nz-col [nzSpan]="8" class="p-1">
-          <app-input-text
-            #codeRef
-            [isNoSpace]="true"
-            required="true"
-            formControlName="code"
-            maxLength="500"
-            [isSpecialDisable]="true"
-            placeHolder="Nhập mã"
-            labelContent="{{ 'catalog-management.service.table.code' | i18n }}"
-          ></app-input-text>
+    <app-breadcrumb *ngIf="isBreadcrumb" [listBreadCrumb]="breadcrumbs"></app-breadcrumb>
+    <nz-card class="nz-card__form" [nzBordered]="false">
+        <div nz-row>
+            <div nz-col nzSpan="24">
+                <app-title-header-layout>
+                    <span *ngIf="action === 'INSERT'">{{'breadcrumb.service-management-add' | i18n}}</span>
+                    <span *ngIf="action === 'UPDATE'">{{'breadcrumb.service-management-edit' | i18n}} {{formSave.get('code').value}}</span>
+                </app-title-header-layout>
+            </div>
         </div>
-        <div nz-col [nzSpan]="8" class="p-1">
-          <app-input-text
-            #nameRef
-            [no-special-character]="true"
-            formControlName="name"
-            required="true"
-            maxLength="500"
-            placeHolder="Nhập tên"
-            labelContent="{{ 'catalog-management.service.table.name' | i18n }}"
-          ></app-input-text>
+        <form nz-form [formGroup]="formSave">
+            <div nz-row>
+                <div nz-col [nzSpan]="8" class="p-1">
+                    <app-input-text #codeRef [isNoSpace]="true" required="true" formControlName="code" maxLength="500" [isSpecialDisable]="true" placeHolder="Nhập mã" labelContent="{{ 'catalog-management.service.table.code' | i18n }}"></app-input-text>
+                </div>
+                <div nz-col [nzSpan]="8" class="p-1">
+                    <app-input-text #nameRef [no-special-character]="true" formControlName="name" required="true" maxLength="500" placeHolder="Nhập tên" labelContent="{{ 'catalog-management.service.table.name' | i18n }}"></app-input-text>
 
-        </div>
-        <div nz-col [nzSpan]="8" class="p-1">
-          <app-select
-            [data]="services"
-            [placeHolder]="'--Lựa chọn--'"
-            [openSearchModal]="false"
-            [getObjectValue]="true"
-            [labelHorizontal]="false"
-            [isSearch]="false"
-            [valueField]="'value'"
-            formControlName="serviceModelIds"
-            required="true"
-            nzMode="multiple"
-            (clickClear)="clearService()"
-            (selectChange)="selectChangeService()"
-            labelContent="{{'catalog-management.service.table.description' | i18n}}"
-          ></app-select>
-        </div>
-      </div>
-      <div nz-row>
-        <div nz-col [nzSpan]="8" class="p-1">
-          <app-input-text
-            required="true"
-            formControlName="serviceModelLocation"
-            placeHolder="Nhập thông tin"
-            [maxLength]="5"
-            [isSpecialDisable]="true"
-            (keyup)="onUpperCase($event)"
-            labelContent="{{'catalog-management.inventory.label.service-model-location' | i18n}}"
-          ></app-input-text>
-        </div>
-      </div>
-      <div nz-row>
-        <div nz-col nzSpan="24" class="p-1">
-          <app-input-textarea
-            [span]="24"
-            formControlName="note"
-            labelContent="{{'catalog-management.service.table.note' | i18n}}"
-          ></app-input-textarea>
-        </div>
-      </div>
-    </form>
-  </nz-card>
-  <div nz-row class="nz-card__form-action pt-4">
-    <div nz-col *ngIf="action === 'INSERT'" [nzSpan]="6" class="p-3">
-    <label class="create-another" *ngIf="action === 'INSERT'" nz-checkbox [(ngModel)]="continue">
+                </div>
+                <div nz-col [nzSpan]="8" class="p-1">
+                    <app-select [data]="services" [placeHolder]="'--Lựa chọn--'" [openSearchModal]="false" [getObjectValue]="true" [labelHorizontal]="false" [isSearch]="false" [valueField]="'value'" formControlName="serviceModelIds" required="true" nzMode="multiple" (clickClear)="clearService()"
+                        (selectChange)="selectChangeService()" labelContent="{{'catalog-management.service.table.description' | i18n}}"></app-select>
+                </div>
+            </div>
+            <div nz-row>
+                <div nz-col [nzSpan]="8" class="p-1">
+                    <app-input-text required="true" formControlName="serviceModelLocation" placeHolder="Nhập thông tin" [maxLength]="5" [isSpecialDisable]="true" (keyup)="onUpperCase($event)" labelContent="{{'catalog-management.inventory.label.service-model-location' | i18n}}"></app-input-text>
+                </div>
+            </div>
+            <div nz-row>
+                <div nz-col nzSpan="24" class="p-1">
+                    <app-input-textarea [span]="24" formControlName="note" labelContent="{{'catalog-management.service.table.note' | i18n}}"></app-input-textarea>
+                </div>
+            </div>
+        </form>
+    </nz-card>
+    <div nz-row class="nz-card__form-action pt-4">
+        <div nz-col *ngIf="action === 'INSERT'" [nzSpan]="6" class="p-3">
+            <label class="create-another" *ngIf="action === 'INSERT'" nz-checkbox [(ngModel)]="continue">
       {{'component.base.checkbox.create-another' | i18n}}
     </label>
-    </div>
-    <div nz-col [nzSpan]="action === 'INSERT' ? 14 : 24" class="form-action__wrapper">
-      <app-button-cancel
-        [isIcon]="false"
-        [popConfirm]="false"
-        (clickCancel)="confirmCancel()"
-      ></app-button-cancel>
+        </div>
+        <div nz-col [nzSpan]="action === 'INSERT' ? 14 : 24" class="form-action__wrapper">
+            <app-button-cancel [isIcon]="false" [popConfirm]="false" (clickCancel)="confirmCancel()"></app-button-cancel>
 
-      <app-button-save
-        [isIcon]="false"
-        text="{{action !== 'INSERT' ? ('layout.btn.update' | i18n) : ('layout.btn.create' | i18n)}}"
-        (clickSave)="submitForm()"
-      ></app-button-save>
+            <app-button-save [isIcon]="false" text="{{action !== 'INSERT' ? ('layout.btn.update' | i18n) : ('layout.btn.create' | i18n)}}" (clickSave)="submitForm()"></app-button-save>
+        </div>
+        <div *ngIf="action === 'INSERT'" nz-col nzSpan="4"></div>
     </div>
-    <div *ngIf="action === 'INSERT'" nz-col nzSpan="4"></div>
-  </div>
 </page-header-wrapper>
-<app-modal-confirm
-  title="{{'layout.btn.confirm' | i18n}}"
-  [isVisible] = "isViewConfirmCancel"
-  content = "{{ 'common.cancel.confirm.content' | i18n}}"
-  textButtonCancel="{{'layout.btn.reject' | i18n}}"
-  [isConfirm]="true"
-  (clickConfirm)="cancel()"
-  (clickCancel)="onCancelConfirm()"
-></app-modal-confirm>
+<app-modal-confirm title="{{'layout.btn.confirm' | i18n}}" [isVisible]="isViewConfirmCancel" content="{{ 'common.cancel.confirm.content' | i18n}}" textButtonCancel="{{'layout.btn.reject' | i18n}}" [isConfirm]="true" (clickConfirm)="cancel()" (clickCancel)="onCancelConfirm()"></app-modal-confirm>
